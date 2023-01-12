@@ -1,0 +1,124 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+<th:block layout:fragment="title">
+  <title>리스트 페이지</title>
+</th:block>
+
+
+<th:block layout:fragment="content">
+  <div class="page_tits">
+    <h3>차트</h3>
+    <p class="path"><strong>현재 위치 :</strong> <span>게시판 관리</span> <span>차트(접속통계)</span></p>
+  </div>
+
+  <div class="content">
+    <section>
+      <div class="main">
+        <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+            <canvas id="test1" width="1100" height="500"></canvas>
+        </div>
+      </div>
+    </section>
+  </div> <!--/* .content */-->
+</th:block>
+
+
+
+<th:block layout:fragment="script"> <!-- 스크립트 들어갈 부분 -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script th:inline="Javascript">
+      var ctx = document.getElementById('test1').getContext('2d');
+
+      var resultData = [[${data}]];       // 방문횟수
+      console.log(resultData);
+      //console.log(resultData.labels);
+
+      var resultData2 = /*[[${data2}]]*/; // 방문자수
+      //console.log(resultData2); 
+      //console.log(resultData2.total);
+
+      var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: 'line',
+
+          // The data for our dataset
+          data: {
+              labels: resultData.labels,
+              datasets: [{
+                  label: '방문횟수',
+                  backgroundColor: 'rgba(232, 62, 140 ,0)',
+                  borderColor: 'rgba(232, 62, 140 ,1)', 
+                  pointRadius: 3,
+                  pointBackgroundColor: 'rgba(232, 62, 140 ,1)',
+                  pointBorderColor: 'rgba(232, 62, 140 ,1)',
+                  pointHoverRadius: 3,
+                  pointHoverBackgroundColor: 'rgba(232, 62, 140 ,1)',
+                  pointHoverBorderColor: 'rgba(232, 62, 140 ,1)',
+                  pointHitRadius: 10,
+                  pointBorderWidth: 2,  
+                  data: resultData.total
+              }, {
+                  label: '방문자수',
+                  lineTension: 0.3,
+                  backgroundColor: 'rgba(54, 185, 204, 0)',
+                  borderColor: 'rgba(54, 185, 204, 1)',
+                  pointRadius: 3,
+                  pointBackgroundColor: 'rgba(54, 185, 204, 1)',
+                  pointBorderColor: 'rgba(54, 185, 204, 1)',
+                  pointHoverRadius: 3,
+                  pointHoverBackgroundColor: 'rgba(54, 185, 204, 1)',
+                  pointHoverBorderColor: 'rgba(54, 185, 204, 1)',
+                  pointHitRadius: 10,
+                  pointBorderWidth: 2,
+                  data: resultData2.total
+                }]
+          },
+          // Configuration options go here
+          options: {
+              responsive: false, // 정적 or 동적 크기 변경해줄 때 설정 (기본설정은true로)
+              title: {
+                  display: true,
+                  text: '접속 통계',
+                  fontSize: 30,
+                  fontColor: 'rgba(46, 49, 49, 1)'
+              },
+              legend: {
+                  labels: {
+                      fontColor: 'rgba(83, 51, 237, 1)',
+                      fontSize: 15
+                  }
+              },
+              scales: {
+                  xAxes: [{
+                      ticks: {
+                          fontColor: 'rgba(27, 163, 156, 1)',
+                          fontSize: '15'
+                      }
+                  }],
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true,
+                          fontColor: 'rgba(246, 36, 89, 1)',
+                          fontSize: '15'
+                      }
+                  }]
+              }
+          }
+      });
+    </script>
+
+
+</th:block>
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

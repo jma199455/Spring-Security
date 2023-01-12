@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+
+
+
+<body>
+     <h1>페이지 확인22 : [[${data}]]</h1>
+                      
+
+
+
+
+    <script th:inline="javascript">
+        var temp = [[${greeting}]];
+        var data = [[${data}]];
+
+        console.log(temp);
+        console.log(data);
+
+
+    </script>
+
+
+
+
+</body>
+
+
+
+
+</html>

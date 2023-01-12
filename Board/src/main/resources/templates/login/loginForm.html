@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>로그인 페이지</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/signin.css}" />
+</head>
+
+<!--  여기서도 가능 script문 
+<script>
+
+    alert("확인");
+
+</script>
+-->
+
+
+<body>
+    <form class="form-signin" id="form" method="post" action="/loginCheck"><!-- /board/boardList -->
+        <div class="text-center mb-4">
+            <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+        </div>
+
+        <!--  
+        <div id="errorText">
+        </div>
+        -->
+
+        <div class="form-label-group" id="asd">
+            <input type="text "id="id" name="id" class="form-control" placeholder="User ID" required="" autofocus="" />
+            <label for="id" class="sr-only">User ID</label>
+        </div>
+        
+        <div class="form-label-group">
+            <input type="password" id="pw" name="pw" class="form-control" placeholder="User Password" required="" />
+            <label for="pw" class="sr-only" id="aaa">User Password</label>
+        </div>
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">로그인</button>
+        <button class="btn btn-lg btn-block" type="button" onclick="move()">회원가입</button>
+    </form>
+
+    <!-- 여기서도 가능 script문  [추천]-->
+    <script th:inline="javascript">
+
+        var temp = [[${data}]];
+        console.log(temp);
+        if (temp != null && temp != undefined) {
+                $('#asd').before('<div class="alert alert-danger" role="alert">로그인 정보를 다시 확인해주세요.</div><p>');
+
+                /*  
+                console.log($('div[class=form-label-group]')[0]);
+                $('#asd').before('<div class="alert alert-danger" role="alert">로그인 정보를 다시 확인해주세요.</div><p>'); // jquery로
+                */
+
+                /*  
+                var inner_box = document.createElement('div');
+                inner_box.setAttribute('class','alert alert-danger');
+                inner_box.setAttribute('role','alert');
+                inner_box.innerText = '로그인 정보를 다시 확인해주세요.';
+
+                // jquery추출 -> DOM객체 -> DOM객체로 .insertBefore 사용 $('div[class=form-label-group]')[0].insertBefore(inner_box, document.querySelector('#id')); 
+                */
+        }
+
+
+        function move() {
+            location.href = '/signupForm';
+        }
+
+    </script>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--  
+<body>
+	<div class="container">
+		<div class="col-lg-4"></div>
+		<div class="col-lg-4">
+			<div class="jumbotron" style="padding-top: 20px;">
+				<form method="post" action="loginAction.jsp">
+					<h3 style="text-align: center;">로그인 화면</h3>
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="아이디" name="userID" maxlength="20">
+					</div>
+					<div class="form-group">
+						<input type="passward" class="form-control" placeholder="비밀번호" name="userPassward" maxlength="20">
+					</div>
+					<input type="submit" class="btn btn-primary form-control" value="로그인">
+				</form>
+			</div>
+		</div>
+		<div class="col-lg-4"></div>
+	</div>
+</body>
+-->
+
+
+<!--  
+<body>
+    <form action="/loginCheck" method="post">
+  
+        <input type="text" name="id" placeholder="아이디" />
+        <input type="password" name="pw" placeholder="비밀번호" />
+        <button>로그인</button>
+   
+
+        <div>
+            <label for="userId"></label>
+            <input type="text" id="id" name="id">
+        </div>
+        <div>
+            <label for="userPass"></label>
+            <input type="pw" id="pw" name="userPass">
+        </div>
+        <div>
+            <button type="submit">로그인</button>
+            <button type="button">회원가입</button>
+        </div>
+    </form>
+</body>
+-->
+
+
+
+</html>

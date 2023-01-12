@@ -1,0 +1,49 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' /* Thymeleaf Layout */
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'  /* Log4JDBC */
+	implementation 'com.google.code.gson:gson:2.8.5'						/* Gson */
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor' /* @ConfigurationProperties 사용 configuration-processor 의존성 추가*/
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation group: 'commons-io', name: 'commons-io', version: '2.6' /* Apache Commons IO */
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.3' /* Apache Commons File Upload */ 
+	/* implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0' 함수 적용 안됨 이유 찾아보기*/
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+	implementation 'org.springframework.boot:spring-boot-starter-security' /* security적용 */
+	implementation 'org.springframework.security:spring-security-test'		/* security적용 */
+	implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'	/* security적용 */
+
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

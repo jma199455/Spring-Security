@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.domain.chart.ChartMapper">
+
+
+    <select id="getListLine" parameterType="com.study.domain.chart.ChartRequestVO" resultType="com.study.domain.chart.StatisticsGenderBarVO">
+        SELECT
+            label
+            ,SUM(IF(gender_code = 'M', 1, 0)) AS men
+            ,SUM(IF(gender_code = 'F', 1, 0)) AS women
+            ,COUNT(*) AS total
+        FROM (					
+                SELECT 
+                    ifnull(bmm.gender_code, 'U') AS gender_code
+                    ,date_format(blh.login_dtm, '%Y-%m-%d') AS label 
+                FROM btc_login_h blh 
+                    JOIN users bmm ON bmm.user_seq = blh.user_seq 
+                    WHERE blh.login_dtm BETWEEN #{param.startDt} AND DATE_ADD(#{param.endDt}, INTERVAL 1 DAY) 	
+        ) um
+        GROUP BY label
+    </select>
+    
+    <select id="getListLine2" parameterType="com.study.domain.chart.ChartRequestVO" resultType="com.study.domain.chart.StatisticsGenderBarVO">
+        SELECT
+            label
+            ,SUM(IF(gender_code = 'M', 1, 0)) AS men
+            ,SUM(IF(gender_code = 'F', 1, 0)) AS women
+            ,COUNT(*) AS total
+        FROM (					
+                SELECT 
+                    distinct(blh.user_seq) AS user_seq
+                    ,ifnull(bmm.gender_code, 'U') AS gender_code
+                    ,date_format(blh.login_dtm, '%Y-%m-%d') AS label 
+                FROM btc_login_h blh 
+                    JOIN users bmm ON bmm.user_seq = blh.user_seq 
+                    WHERE blh.login_dtm BETWEEN #{param.startDt} AND DATE_ADD(#{param.endDt}, INTERVAL 1 DAY) 	
+        ) um
+        GROUP BY label
+    </select> 
+
+
+
+
+
+
+</mapper>

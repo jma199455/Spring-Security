@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>로그인 페이지</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/signin.css}" />
+</head>
+  
+    <body>
+        <form class="form-signin" id="form" method="post" action="/loginCheck"><!-- /board/boardList -->
+            <div class="text-center mb-4">
+                <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+            </div>
+            <div class="alert alert-danger" role="alert">로그인 정보를 다시 확인해주세요.</div><p>
+
+
+
+            <div class="form-label-group">
+                <input type="text "id="id" name="id" class="form-control" placeholder="User ID" required="" autofocus="" />
+                <label for="id" class="sr-only">User ID</label>
+            </div>
+            
+            <div class="form-label-group">
+                <input type="password" id="pw" name="pw" class="form-control" placeholder="User Password" required="" />
+                <label for="pw" class="sr-only">User Password</label>
+            </div>
+            
+            <button class="btn btn-lg btn-primary btn-block" type="submit">로그인</button>
+            <button class="btn btn-lg btn-block" type="button">회원가입</button>
+        </form>
+    </body>
+</html>

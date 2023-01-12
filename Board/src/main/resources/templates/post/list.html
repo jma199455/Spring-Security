@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+<th:block layout:fragment="title">
+  <title>리스트 페이지</title>
+</th:block>
+
+
+
+<th:block layout:fragment="content">
+  <div class="page_tits">
+    <h3>게시판 관리</h3>
+    <p class="path"><strong>현재 위치 :</strong> <span>게시판 관리</span> <span>리스트형</span> <span>리스트</span></p>
+  </div>
+
+  <div class="content">
+    <section>
+      <!--/* 검색 */-->
+      <div class="search_box">
+        <form id="searchForm" onsubmit="return false;" autocomplete="off">
+          <div class="sch_group fl">
+            <select title="검색 유형 선택" id="searchType" name="searchType">
+              <option value="">전체 검색</option>
+              <option value="title">제목</option>
+              <option value="writer">작성자</option>
+            </select>
+            <input type="text" placeholder="키워드를 입력해 주세요." title="키워드 입력" name="keyword"/>
+            <button type="button" class="bt_reset" style="width:100px">초기화</button>
+            <!-- <button type="button" class="bt_search" onclick="movePage(1);"><i class="fas fa-search"></i><span class="skip_info">검색</span></button> -->
+            <button type="button" class="bt_search" onclick="SearchMovePage(1);"><i class="fas fa-search"></i><span class="skip_info">검색</span></button>
+          </div>
+        </form>
+      </div>
+
+      <!--/* 리스트 */-->
+      <table class="tb tb_col">
+        <colgroup>
+          <col style="width:50px;" /><col style="width:7.5%;" /><col style="width:auto;" /><col style="width:10%;" /><col style="width:15%;" /><col style="width:7.5%;" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col"><input type="checkbox" /></th>
+            <th scope="col">번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성자</th>
+            <th scope="col">등록일</th>
+            <th scope="col">조회</th>
+          </tr>
+        </thead>
+        <!--/* 리스트 데이터 렌더링 영역 */-->
+        <tbody id="list">
+        
+        </tbody>
+      </table>
+
+      <!--/* 페이지네이션 렌더링 영역 */-->
+      <div class="paging">
+        
+      </div>
+
+      <!--/* 버튼 */-->
+      <p class="btn_set tr">
+        <a th:href="@{/post/write.do}" class="btns btn_st3 btn_mid">글쓰기</a>
+        <a id="btnDel" class="btns btn_st3 btn_mid" th:style="${'background:red'}">선택삭제</a>
+      </p>
+    </section>
+  </div> <!--/* .content */-->
+</th:block>
+
+ 
+<th:block layout:fragment="script"> <!-- 이거작성하지 않으면 script 안먹힘 (layout을 사용하고 있기 때문에 body.html에 <th:block layout:fragment="script"></th:block> 작성했기 때문에 )-->
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    var tempList = [];
+
+    window.onload = () => {
+        setQueryStringParams();
+        findAllPost();
+
+        $('.bt_reset').click(function(){
+            var form = $('#searchForm')[0];
+            form.reset();
+        });
+
+        $('#btnDel').click(() => {
+              $('input[name=chk]:checked').each(function(){
+                if($(this).is(":checked")==true){
+                  tempList.push($(this).val());
+                }
+              });
+
+              console.log(tempList[0]);
+              console.log(tempList[1]);
+              
+              var url = '/post/deleteChk.do';
+              var data = { paramSeqs : tempList };
+
+              var callback = function(data){
+                if(data >= 1) {
+                  alert('삭제완료');
+                } else {
+                  alert('삭제실패');
+                }
+                location.href = '/post/list.do';
+              };  
+              
+              ChkDeleteAjax(url, $.param(data,true), callback);
+
+            });
+    }
+
+        // 쿼리 스트링 파라미터 셋팅 (키워드, 검색 조건, 페이징 유지하기)
+        function setQueryStringParams() {
+
+            // ?~~~ 쿼리 스트링 없는 경우 메소드 종료
+            if ( !location.search ) {
+                return false;
+            }
+
+            const form = document.getElementById('searchForm');
+            // 쿼리스트링 값 해당 value에 넣기
+            var urlParams = new URLSearchParams(location.search);
+            urlParams.delete('id');
+
+            urlParams.forEach((value, key) => {
+                if (form[key]) {
+                    form[key].value = value;
+                }
+            })
+        }
+
+        
+    // 게시글 상세 페이지로 이동
+    function goViewPage(id) {
+        const queryString = (location.search) ? location.search + `&id=${id}` : `?id=${id}`;
+        location.href = '/post/view.do' + queryString;
+    }
+
+
+
+    // 게시글 리스트 조회
+    function findAllPost() {
+
+      const list = [[ ${response.list} ]];
+
+      // console.log(list);
+
+      if ( !list.length ) {
+        document.getElementById('list').innerHTML = '<td colspan="6"><div className="no_data_msg">검색된 결과가 없습니다.</div></td>';
+        drawPage();
+      }
+
+      const pagination = [[ ${response.pagination} ]];
+      const params = [[ ${params} ]];
+
+      let num = pagination.totalRecordCount - ((params.page - 1) * params.recordSize); // 번호 노출
+      //  num =  101 - 40 = 61                      5   - 1  = 4 * 10 40                                                    
+      //                    61 부터 num-- 로 나타내려고 사용
+
+      drawList(list, num);
+      drawPage(pagination, params);
+
+    }
+
+
+    // 리스트 HTML draw
+    function drawList(list, num) {
+
+      let html = '';
+
+      list.forEach((row, index)=> {
+        /* <td class="tl"><a href="/post/view.do?id=${row.id}">${row.title}</a></td> 상세 페이지로 쿼리 스트링 전달하기 전*/
+        /* <td>${row.noticeYn === false ? num-- : '공지'}</td> 기존 num으로 번호 출력했을 때 로직 (전체 리스트 101개 중에 공지가1개 있을 때 100부터 번호 나와야하는데 101부터 나오고있음) */
+        html += `
+            <tr>
+                <td><input type="checkbox" name="chk" value="${row.id}"/></td>
+                <td>${row.noticeYn === false ? row.rm : '공지'}</td>  
+                <td class="tl"><a href="javascript: void(0);" onclick="goViewPage(${row.id});">${row.title}</a></td>            
+                <td>${row.writer}</td>
+                <td>${dayjs(row.createdDate).format('YYYY-MM-DD HH:mm')}</td>
+                <td>${row.viewCnt}</td>
+            </tr>
+        `;
+
+      })
+
+      document.getElementById('list').innerHTML = html;
+
+    }
+
+    // 페이지 HTML draw
+    function drawPage(pagination, params) {
+
+      if ( !pagination || !params ) {
+        document.querySelector('.paging').innerHTML = '';
+        throw new Error('Missing required parameters...');
+      }
+      
+      let html = '';
+
+      // 첫 페이지, 이전 페이지
+      // console.log(pagination.existPrevPage);
+      // console.log(pagination.startPage);
+      if (pagination.existPrevPage) {
+
+        // pagination.startPage 가 1일경우 1page로 이동
+        if(pagination.startPage == 1) {
+          html += `
+            <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>
+            <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 1})" class="page_bt prev">이전 페이지</a>
+        `;
+        // 그 외의 경우 pagination.startPage - 10 으로 이동 ex) pagination.startPage가 21이면 21-10 = 11페이지로 이동
+        }else {
+          html += `
+            <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>
+            <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 10})" class="page_bt prev">이전 페이지</a>
+        `;
+        }
+
+      }
+
+      // 페이지 번호
+      html += '<p>';
+      for (let i = pagination.startPage; i <= pagination.endPage; i++) {
+
+        html += (i !== params.page)
+                ? `<a href="javascript:void(0);" onclick="movePage(${i});">${i}</a>`
+                : `<span class="on">${i}</span>`
+      }
+      html += '</p>';
+
+      // 다음 페이지, 마지막 페이지 (existNextPage는 page 10 이상)
+      if (pagination.existNextPage) {
+        html += `
+            <a href="javascript:void(0);" onclick="movePage(${pagination.endPage + 1});" class="page_bt next">다음 페이지</a>
+            <a href="javascript:void(0);" onclick="movePage(${pagination.totalPageCount});" class="page_bt last">마지막 페이지</a>
+        `;
+      }
+      document.querySelector('.paging').innerHTML = html;
+    }
+
+
+    // 각 페이지 버튼 클릭
+    function movePage(page) {
+      const form = document.getElementById('searchForm');
+      const queryParams = {
+        page: (page) ? page : 1,
+        recordSize: 10,
+        pageSize: 10,
+        keyword : form.keyword.value,
+        searchType : form.searchType.value
+      }
+      location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
+    }
+
+    // 검색 버튼 
+    function SearchMovePage(page) {
+      const form = document.getElementById('searchForm');
+      const queryParams = {
+        page: (page) ? page : 1,
+        recordSize: 10,
+        pageSize: 10,
+        keyword : form.keyword.value,
+        searchType : form.searchType.value
+      }
+
+      if(queryParams.searchType == "") {
+        if(queryParams.keyword != "") {
+            alert('검색타입을 선택해주세요.');
+            return false;
+        }
+      }
+
+      location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
+    }
+
+
+    /*]]>*/
+
+      // list 선택삭제 Ajax 처리 
+      function ChkDeleteAjax(url, data, callback = false){
+    
+        $.ajax({
+          type: 'post',
+          data: data,
+          //contentType: "application/json; charset=utf-8",
+          url: url,
+          dataType: "json",
+          success: function (data) {
+            if(callback) {
+              console.log(data);
+              callback(data);
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert("ERROR : " + textStatus + " : " + errorThrown);
+          }
+        });      
+     } 
+
+  </script>
+</th:block>
+
+
+
+</html>

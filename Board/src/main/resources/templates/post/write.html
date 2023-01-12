@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+    <th:block layout:fragment="title">
+        <title>글작성 페이지</title>
+    </th:block>
+
+    <th:block layout:fragment="content">
+        <div class="page_tits">
+            <h3>게시판 관리</h3>
+            <p class="path"><strong>현재 위치 :</strong> <span>게시판 관리</span> <span>리스트형</span> <span>글작성</span></p>
+        </div>
+
+        <div class="content">
+            <section>
+                <form id="saveForm" method="post" autocomplete="off" enctype="multipart/form-data">
+                <!-- <form id="saveForm" method="post" action="/post/save.do" enctype="multipart/form-data"> --> <!-- validation 사용할 때 사용-->
+                    
+                    <!--/* 게시글 수정인 경우, 서버로 전달할 게시글 번호 (PK) */-->
+                    <input type="hidden" id="id" name="id" th:if="${post != null}" th:value="${post.id}" />
+                    <!--/* 서버로 전달할 공지글 여부 */-->
+                    <input type="hidden" id="noticeYn" name="noticeYn" /> <!-- 공지글 현재 사용안함..? -->
+                    <input type="hidden" id="changeYn" name="changeYn" value="N"/>   <!-- 파일이 변경된 경우 hidden --> 
+
+                    <table class="tb tb_row">
+                        <colgroup>
+                            <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row">공지글</th>
+                                <td><span class="chkbox"><input type="checkbox" id="isNotice" name="isNotice" class="chk" /><i></i><label for="isNotice"> 설정</label></span></td>
+
+                                <th scope="row">등록일</th>
+                                <td colspan="3"><input type="text" id="createdDate" name="createdDate" readonly /></td>
+                            </tr>
+
+                            <tr>
+                                <th>제목 <span class="es">필수 입력</span></th>
+                                <td colspan="3"><input type="text" id="title" name="title" maxlength="50" placeholder="제목을 입력해 주세요."/></td>
+                            </tr>
+
+                            <tr>
+                                <th>이름 <span class="es">필수 입력</span></th>
+                                <td colspan="3"><input type="text" id="writer" name="writer" maxlength="10" placeholder="이름을 입력해 주세요." /></td>
+                            </tr>
+
+                            <tr>
+                                <th>내용 <span class="es">필수 입력</span></th>
+                                <td colspan="3"><textarea id="content" name="content" cols="50" rows="10" placeholder="내용을 입력해 주세요."></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table><br>
+
+                    <!-- file 등록일 경우 -->
+                    <div th:if="${#lists.isEmpty( fileList )}" data-name="fileDiv" class="form-group filebox bs3-primary">
+                        <label for="file_0" class="col-sm-2 control-label">파일</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="upload-name" value="파일 찾기" readonly />
+                            <label for="file_0" class="control-label">찾아보기</label>
+                            <input type="file" name="files" id="file_0" class="upload-hidden" onchange="changeFilename(this)" />
+                        
+                            <button type="button" onclick="addFile()" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" onclick="removeFile(this)" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- file 수정일 경우 -->
+                    <div th:unless="${#lists.isEmpty( fileList )}" th:each="row, status : ${fileList}" data-name="fileDiv" class="form-group filebox bs3-primary">
+                        <label th:for="|file_${status.index}|" class="col-sm-2 control-label">[[ |파일${status.count}| ]]</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" name="fileIdxs" th:value="${row.idx}" />
+                            <input type="text" class="upload-name" th:value="${row.originalName}" readonly />
+                            <label th:for="|file_${status.index}|" class="control-label">찾아보기</label>
+                            <input type="file" name="files" th:id="|file_${status.index}|" class="upload-hidden" onchange="changeFilename(this)" />
+                        
+                            <button th:if="${status.first}" type="button" onclick="addFile()" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                            <!-- 파일1 부분 - 없애기 -->
+                            <th:block th:if="${status.index != 0}">
+                            <button type="button" onclick="removeFile(this)" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div id="btnDiv">
+                    </div>    
+                    <!-- <button type="submit" id="saveBtn" class="btns btn_st3 btn_mid">저장</button> --> <!-- validation 사용할 때 submit form 안에다가! -->
+                </form>
+                    <!-- 버튼 -->
+                    <div>
+                        <p class="" style="text-align: right;">
+                            <button type="button" id="saveBtn" onclick="savePost();" class="btns btn_st3 btn_mid">저장</button>
+                            <!-- <a th:href="@{/post/list.do}" class="btns btn_bdr3 btn_mid">리스트 목록으로</a> 페이징 처리 전 -->
+                            <a href="javascript:void(0);" onclick="goListPage();" class="btns btn_bdr3 btn_mid">리스트 목록으로</a>
+                        </p>
+                     </div>
+
+            </section>
+        </div> <!--/* .content */-->
+    </th:block>
+    
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+
+        window.onload = () => {
+            
+            renderPostInfo();
+
+            // 파일 갯수당 확인
+            console.log($('input[name=fileIdxs]')[0]);  
+            console.log($('input[name=fileIdxs]')[1]);
+            console.log($('input[name=fileIdxs]')[2]);
+
+
+        } // end onload 
+
+        /* jQuery validation plugin 사용  */
+        /*  
+        $(document).ready(function () {          
+    
+            $('#saveForm').validate({
+
+                rules : {
+                    title : {
+                        required : true
+                    }, writer : {
+                        required : true
+                    }, content : {
+                        required : true
+                    }
+                }, 
+                messages : {
+                    title : {
+                        required : "제목을 입력해 주세요."
+                    },
+                    writer : {
+                        required : "이름을 입력해 주세요."
+                    }, 
+                    content : {
+                        required : "내용을 입력해 주세요."
+                    }
+                }
+                ,
+                submitHandler: function (){ // 검증 성공시 다음 처리, ajax로 submit 처리 시 사용
+                    alert("검증성공");
+                    savePost(); 
+                }
+            });
+
+        }); 
+        */
+
+        // 등록일 초기화
+        function initCreatedDate() {
+            document.getElementById('createdDate').value = dayjs().format('YYYY-MM-DD');
+        }
+
+        const fileList = /*[[ ${fileList} ]]*/;                 // [- 업로드 파일 리스트 -] 
+        let fileIdx = isEmpty(fileList) ? 0 : fileList.length;  // [- 파일 인덱스 처리용 전역 변수 -] , true 등록 false 수정 화면 */ 
+
+        function addFile() {
+
+            const fileDivs = $('div[data-name="fileDiv"]');
+            if (fileDivs.length > 2) {
+                alert('파일은 최대 세 개까지 업로드 할 수 있습니다.');
+                return false;
+            }
+
+            document.getElementById('changeYn').value = 'Y';
+            fileIdx++;
+            
+            console.log("fileIdx++ ===> " + fileIdx);
+
+
+            const fileHtml = `
+                <div data-name="fileDiv" class="form-group filebox bs3-primary">
+                    <label for="file_${fileIdx}" class="col-sm-2 control-label"></label>
+                    <div class="col-sm-10">
+                        <input type="text" class="upload-name" value="파일 찾기" readonly />
+                        <label for="file_${fileIdx}" class="control-label">찾아보기</label>
+                        <input type="file" name="files" id="file_${fileIdx}" class="upload-hidden" onchange="changeFilename(this)" />
+
+                        <button type="button" onclick="removeFile(this)" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
+                            <i class="fa fa-minus" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            $('#btnDiv').before(fileHtml);
+        }
+
+        function removeFile(elem) {
+
+            document.getElementById('changeYn').value = 'Y';
+            const prevTag = $(elem).prev().prop('tagName');
+
+            if (prevTag === 'BUTTON') {
+                const file = $(elem).prevAll('input[type="file"]');
+                const filename = $(elem).prevAll('input[type="text"]');
+                file.val('');
+                filename.val('파일 찾기');
+                return false;
+            }
+            const target = $(elem).parents('div[data-name="fileDiv"]');
+            target.remove();
+        }
+
+        function changeFilename(file) {
+
+            document.getElementById('changeYn').value = 'Y';
+            file = $(file);
+
+            const filename = file[0].files[0].name;
+
+            const target = file.prevAll('input.upload-name'); // 변경된 코드
+            target.val(filename);
+
+            file.prevAll('input[name="fileIdxs"]').remove(); // 추가된 로직 여기 로그 찍어보기
+                                                             // 변경하면 기존의 fileIdxs 값을 삭제 ==> 삭제가 안됬을 경우 그대로 유지? 등록?
+
+        }
+
+
+        // 게시글 저장(수정)
+        function savePost() {
+            const form = document.getElementById('saveForm');
+            const fields = [form.title, form.writer, form.content];
+            const fieldNames = ['제목', '이름', '내용'];
+
+            // validation.js 체크 문제없으면 주석 해제
+            for (let i = 0, len = fields.length; i < len; i++) {
+                var temp = isValid(fields[i], fieldNames[i]); // 공통 함수
+                if (!temp) {
+                    return false;
+                }
+            }
+
+            // document.getElementById('saveBtn').disabled = true;
+            form.noticeYn.value = form.isNotice.checked;
+            
+
+            // 수정일 경우 ajax 호출로 처리해보기
+            var data = [[ ${post == null} ]];
+            if(!data) {
+                
+                    // multipart-form 아니였을 때
+                    /*  
+                    var queryString = new URLSearchParams(location.search);
+                    var idCheck = queryString.get('id');
+
+                    var url = '/post/update.do';
+                    var data = {
+                            id : idCheck,
+                            title : form.title.value,
+                            writer : form.writer.value,
+                            content : form.writer.value,
+                            noticeYn : form.noticeYn.value
+                        };
+                    
+                    var callback = function(data){
+                        if(data >= 1) {
+                            alert('수정이 완료되었습니다.');
+                        } else {
+                            alert('수정이 실패하였습니다.');
+                        }
+                        var queryString = new URLSearchParams(location.search);
+                        queryString.delete('id');
+                        var listUrl = '/post/list.do' + '?' + queryString.toString();
+                        location.href = listUrl; 
+                    };
+                    
+                    restAjax(url, data, callback);
+                    */
+
+                var url = '/post/update.do';
+
+                var callback = function(data){
+                    if(data >= 1) {
+                        alert('수정이 완료되었습니다.');
+                    } else {
+                        alert('수정이 실패하였습니다.');
+                    }
+                    var queryString = new URLSearchParams(location.search);
+                    queryString.delete('id');
+                    var listUrl = '/post/list.do' + '?' + queryString.toString();
+                    location.href = listUrl; 
+                };
+                
+                restAjax(url, $(form), callback);
+
+
+            } else {
+                form.action = '/post/save.do';
+                form.submit();
+            }
+
+            //form.action = [[ ${post == null} ]] ? '/post/save.do' : '/post/update.do';  // 저장버튼 클릭 시 list.html 페이징 적용 전 코드
+            //form.submit();    // 저장버튼 클릭 시 list.html 페이징 적용 전 코드
+        }
+
+
+        function renderPostInfo() {
+
+            const post = /*[[${post}]]*/;
+
+            if (!post) {
+                initCreatedDate();
+                return false;
+            }
+
+            const form = document.getElementById('saveForm');
+            const fields = ['id', 'title', 'content', 'writer', 'noticeYn'];
+            form.isNotice.checked = post.noticeYn;
+            form.createdDate.value = dayjs(post.createdDate).format('YYYY-MM-DD HH:mm');
+
+            fields.forEach(field => {
+                form[field].value = post[field];
+            });
+        }
+
+        function goListPage() {
+            const queryString = new URLSearchParams(location.search);
+            queryString.delete('id');
+            location.href = '/post/list.do' + '?' + queryString.toString();
+        }
+        
+        /*  
+        // 수정일 경우 ajax 호출 , 파일 수정 전
+        function restAjax(url, data, callback = false) {
+            $.ajax({
+                type: 'post',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                url: url,
+                dataType: "json",
+                success: function (data) {
+                    if(callback) {
+                    callback(data);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("ERROR : " + textStatus + " : " + errorThrown);
+                }
+            });      
+        }
+        */
+        
+        // multipart/form-data 사용 수정일 경우 ajax 호출
+        function restAjax(url, _form, callback = false) {
+
+            var formdata = new FormData();
+            var $form = $(_form);
+            var msgs = [];
+            
+            // 파일 formdata.append 
+            $form.find('input[type=file]').each(function(){
+                    
+                var file = $(this)[0].files[0];
+                console.log(file);
+
+                if(checkFileSize(file)) {
+                    console.log($(this)[0].name);
+                    //console.log($(this)[0].files[0]);
+                    
+                    formdata.append($(this)[0].name, $(this)[0].files[0]);
+                    
+                } else {
+                    msgs.push('[' + file.name + '(' + file.size + ' byte)]')
+                }
+            });
+
+            // 여기서는 files 값 배열로 확인 안되지만 컨트롤러에서 찍어보면 배열값으로 확인된다!!!!!!!!! 메모 
+            //console.log(formdata.get('files'));
+
+            // 나머지 form 데이터들 append
+            var data = $form.serializeArray();
+                data.forEach(function(item) {
+                formdata.append(item.name, item.value); // $form.serializeArray(); 
+                                                        // ===> {name: 'id', value: '3583'} , {name: 'noticeYn', value: 'false'} ....이런식으로 들어감
+
+            });
+
+            /*  
+            if(msgs.length > 0) {
+                bsAlert('파일 용량 확인<br/>' + msgs.join('<br/>'));
+            } else {
+                var data = $form.serializeArray();
+                data.forEach(function(item) {
+                    formdata.append(item.name, item.value);
+                });
+            }
+            */
+            
+            // Content-Type : multipart/form-data 
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: "json",
+                data: formdata,
+                processData: false, // multipart 설정 (false로 선언 시 formData를 string으로 변환하지 않음)
+                contentType: false, // multipart 설정 (false 로 선언 시 content-type 헤더가 multipart/form-data로 전송되게 함)
+                success: function (data) {
+                    if(callback) {
+                    callback(data);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("ERROR : " + textStatus + " : " + errorThrown);
+                }
+            }); 
+        }
+
+        function checkFileSize(file) {
+            var check = true;
+            var size = 104857600; // 100mb
+            if(file != undefined) {
+                if(file.size > size) {
+                    check = false;
+                } 
+            }
+
+            return check;
+        }
+    /*]]>*/
+
+    </script>
+</th:block>
+</html>

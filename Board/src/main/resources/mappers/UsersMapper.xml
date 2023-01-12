@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.domain.login.UsersMapper">
+                   
+
+    <!-- map으로 바꿔보기 -->
+    <select id="usersLogin" parameterType="com.study.domain.login.UsersDto" resultType="com.study.domain.login.UsersDto">
+        select *  from users
+        where id = #{id} and pw = #{pw}
+    </select>
+
+
+    <insert id="insert" parameterType="com.study.domain.login.UsersDto">
+        insert into btc_login_h(
+            user_seq,
+            login_dtm,
+            create_date
+        ) 
+        values(
+            #{userSeq},
+            now(),
+            #{createDate}
+        )
+    </insert>
+
+</mapper>

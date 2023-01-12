@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head th:fragment="main-head">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+        <th:block layout:fragment="title"></th:block>
+
+        <link rel="stylesheet" th:href="@{/css/default.css}" />
+        <link rel="stylesheet" th:href="@{/css/common.css}" />
+        <link rel="stylesheet" th:href="@{/css/content.css}" />
+        <link rel="stylesheet" th:href="@{/css/button.css}" />
+        <link rel="stylesheet" th:href="@{/css/style.css}" />
+        <link rel="stylesheet" th:href="@{/plugin/bootstrap/css/bootstrap.min.css}" />  <!-- 모달사용 필요1 -->
+        <link rel="stylesheet" th:href="@{/plugin/bootstrap/css/bootstrap.css}" />      <!-- 모달사용 필요2 -->
+
+
+
+        <th:block layout:fragment="add-css"></th:block>
+    </head>
+</html>

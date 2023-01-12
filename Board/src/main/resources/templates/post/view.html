@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultratestBtntestBtnq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+
+<th:block layout:fragment="title">
+    <title>상세 페이지</title>
+</th:block>
+
+
+
+<!-- 모달 방법1  -->
+<th:block layout:fragment="modal">
+    <div id="commentModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="modalWriter" class="col-form-label">작성자</label>
+                            <input type="text" id="modalWriter" class="form-control" placeholder="작성자를 입력해 주세요." />
+                        </div>
+                        <div class="form-group">
+                            <label for="modalContent" class="col-form-label">내용</label>
+                            <textarea id="modalContent" class="form-control" placeholder="내용을 입력해 주세요."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnModalCancel" class="btn btn-default waves-effect waves-light" data-dismiss="modal">취소하기</button>
+                    <button type="button" id="btnCommentUpdate" class="btn btn-primary waves-effect waves-light" onclick="updateComment()">수정하기</button>
+                    <button type="button" id="btnCommentDelete" class="btn btn-danger waves-effect waves-light" onclick="deleteComment()">삭제하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="content">
+    <div class="card-content">
+        <div class="page_tits">
+            <h3>게시판 관리</h3>
+            <p class="path"><strong>현재 위치 :</strong> <span>게시판 관리</span> <span>리스트형</span> <span>상세정보</span></p>
+        </div>
+
+        <div class="content">
+            <section>
+                <table class="tb tb_row">
+                    <colgroup>
+                        <col style="width:10%;" /><col style="width:23%;" /><col style="width:10%;" /><col style="width:23%;" />
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th scope="row">글 유형</th>
+                            <td th:text="${post.noticeYn == false ? '일반' : '공지'}"></td>
+
+                            <th scope="row">등록일</th>
+                            <td th:text="${post.createdDate}"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">제목</th>
+                            <td>[[ ${post.title} ]]</td>
+
+                            <th scope="row">조회</th>
+                            <td colspan="3">[[ ${post.viewCnt} ]]</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">이름</th>
+                            <td colspan="3">[[ ${post.writer} ]]</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">내용</th>
+                            <td colspan="3">[[ ${post.content} ]]</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 파일 리스트 출력 부분-->
+                <div th:if="${not #lists.isEmpty( fileList )}" class="form-group">
+                    <label for="inp-type-4" class="col-sm-2 control-label">File</label>
+                    <div class="col-sm-10">
+                        <div class="form-control file_list">
+                            <!-- <a th:each="row, status : ${fileList}" th:href="@{/post/download.do( idx=${row.idx} )}"> -->
+                            <a th:each="row, status : ${fileList}" th:href="@{/post/download.do(idx=${row.idx})}">
+                                <i class="fa fa-file-o" aria-hidden="true"></i>
+                                [[${row.originalName}]]
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                 
+                <div>
+                    <p class="" style="text-align: center;">
+                        <!-- <a th:href="@{/post/write.do(id=${post.id})}" class="btns btn_bdr4 btn_mid">수정하기</a> -->
+                        <a href="javascript:void(0);" onclick="goWritePage();" class="btns btn_bdr4 btn_mid">수정하기</a>
+                        <button type="button" onclick="deletePost();" class="btns btn_bdr1 btn_mid">삭제하기</button>
+                        <a href="javascript:void(0);" onclick="goListPage();" class="btns btn_bdr3 btn_mid">뒤로가기</a>
+                    </p>
+                </div>
+
+
+            </section>
+        </div> <!--/* .content */-->
+    </div>
+</th:block>
+
+
+
+
+<!-- 댓글 부분 -->
+<th:block layout:fragment="add-content">
+    
+    <div class="box-content">
+        <div class="card-content">
+            <div class="clearfix">
+                <h4 class="box-title pull-left">Comment</h4>
+            </div>
+            <form class="form-horizontal form-view">
+                <div class="input-group margin-bottom-20">
+                    <th:block th:fragment="view_modal"> <input type="text" id="content" class="form-control" />
+                    <div class="input-group-btn">   
+                        <button type="button" class="btn waves-effect waves-light" th:parameterName="${post.id}" th:onclick="insertComment(this.getAttribute('parameterName'))">
+                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <ul class="notice-list"></ul>
+            </form>
+        </div>
+        <!-- /.card-content -->
+
+        <!--/* 페이지네이션 렌더링 영역 */-->
+        <div class="paging">
+
+        </div>
+
+    </div>
+
+    <!-- 모달방법2 body.html에서 insert 해줘야함 여기서하면 정상 작동 되지 않음 (이유는 모르겠음..)-->
+    <!-- <th:block th:insert="common/view_modal :: view_modal"></th:block> --> 
+</th:block>
+
+
+
+
+<th:block layout:fragment="script"> <!-- 스크립트 들어갈 부분 -->
+  <script th:inline="javascript">
+
+
+    $(function() {
+        printCommentList();
+
+	});
+
+    
+    function openModal(idx, writer, content) {
+
+        console.log("idx ===> " + idx);
+        console.log("writer ===> " + writer);
+        console.log("content ===> " + content);
+
+       $("#commentModal").modal("toggle");  
+
+        document.getElementById("modalWriter").value = writer;
+        document.getElementById("modalContent").value = content;    
+
+        document.getElementById("btnCommentUpdate").setAttribute("onclick", "updateComment("+ idx +")");
+        document.getElementById("btnCommentDelete").setAttribute("onclick", "deleteComment("+ idx +")");
+    }
+    
+    // 삭제처리 
+    function deleteComment(idx) {
+
+        if (!confirm('댓글을 삭제하시겠어요?')) {
+            return false;
+        }
+
+        var uri = [[ @{/comments/} ]] + idx;
+        var headers = {"Content-Type": "application/json", "X-HTTP-Method-Override": "DELETE"};
+
+        $.ajax({
+            url: uri,
+            type: "DELETE",
+            headers: headers,
+            dataType: "json",
+            success: function(response) {
+                if (response.result == false) {
+                    alert("댓글 삭제에 실패하였습니다.");
+                    return false;
+                }
+
+                printCommentList();
+                alert("댓글을 삭제하였습니다.");
+                $("#commentModal").modal("hide");
+            },
+            error: function(xhr, status, error) {
+                alert("에러가 발생하였습니다.");
+                return false;
+            }
+        });
+    }
+
+
+
+
+    // 수정처리
+    function updateComment(idx) {
+
+        var writer = document.getElementById("modalWriter");
+        var content = document.getElementById("modalContent");
+
+        // Thymeleaf url 표현방법
+        //var uri = [[@{/comments/(${params.id})}]]; 
+        var uri = [[ @{/comments/} ]] + idx;
+        var headers = {"Content-Type": "application/json", "X-HTTP-Method-Override": "PATCH"};
+        var params = {"idx": idx, "writer": writer.value, "content": content.value};
+
+        $.ajax({
+            url: uri,
+            type: "PATCH",
+            headers: headers,
+            dataType: "json",
+            data: JSON.stringify(params),
+            success: function(response) {
+                if (response.result == false) {
+                    alert("댓글 수정에 실패하였습니다.");
+                    return false;
+                }
+
+                printCommentList();
+                $("#commentModal").modal("hide");
+            },
+            error: function(xhr, status, error) {
+                alert("에러가 발생하였습니다.");
+                return false;
+            }
+        });
+    }
+
+
+
+
+    // 등록처리 
+    function insertComment(boardIdx) {
+
+        console.log("boardIdx ======================> " +  boardIdx);
+        var content = document.getElementById("content");
+
+        if (content.value == "" || content.value == null) {
+            content.setAttribute("placeholder", "댓글을 입력해 주세요."); // attribute 설정
+            content.focus();
+            return false;
+        }
+
+        // var uri = /*[[ @{/comments} ]]*/;
+        var uri = "/comments";
+
+        //var headers = {"Content-Type": "application/json", "X-HTTP-Method-Override": "POST"};
+        var params = {"boardIdx": boardIdx, "content": content.value, "writer": "관리자"};
+
+        $.ajax({
+            url: uri,
+            type: "POST",
+            //headers: headers,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(params),
+            success: function(response) {
+                if (response.result == false) {
+                    alert("댓글 등록에 실패하였습니다.");
+                    return false;
+                } 
+                alert("댓글이 등록되었습니다.")
+                printCommentList();
+                content.value = "";
+            },
+            error: function(xhr, status, error) {
+                alert("에러가 발생하였습니다.");
+                return false;
+            }
+        });
+    }
+
+
+	function printCommentList() {
+
+        var url = '/comments/' + [[${post.id}]];    // 댓글 리스트 url
+        var page = [[${params.page}]];  // queryString 확인
+
+        var data = { 
+                    //id : id,
+                    page: (page) ? page : 1,
+                    recordSize: 10,
+                    pageSize: 10
+                };
+
+        // console.log(data);                   object
+        // console.log($.param(data,true));     queryString
+
+        $.ajax({
+            type: 'get',
+            data: $.param(data,true),
+            //contentType: "application/json; charset=utf-8",  
+            url: url,
+            dataType: "json",
+            success: function (response) {
+                //console.log(response);  // 통신 성공 시 json형태 확인
+                
+                // ajax 성공시
+                var commentsHtml = "";
+                if (response.commentList.length > 0) {    
+
+                    //$(response.nameValuePairs.commentList).each(function(idx, comment) {    jackson 라이브러리 사용할 경우
+                    $(response.commentList).each(function(idx, comment) {
+                        commentsHtml += `
+                            <li>   
+                                <span class="name">${comment.writer}</span>
+                                <span class="desc">${comment.content}</span>
+                                <span class="time">${comment.insertTime}</span>
+                                <button type="button" onclick="openModal(${comment.idx}, '${comment.writer}', '${comment.content}' )" class="btn btn-xs btn-circle"><i class="glyphicon glyphicon-pencil" aria-hidden="false"></i></button>
+                            </li>
+                        `;
+                    });
+
+                    // ajax통신 json 값 가져오기
+                    const pagination = response.PaginationComment;  // 페이징 그리기 처리 데이터   
+                    const page = response.pageAttr.page;            // 현재 파라미터 page 값
+
+                    // const params = [[${params}]]; // 쿼리스트링으로 넘겨준 요청 값들(viewController 파라미터)
+                    /* 페이지 처리 부분 값 확인  
+                    console.log("params.page : " + params.page);
+                    console.log("params.recordSize : " + params.recordSize);
+                    console.log("params.pageSize : " + params.pageSize);
+                    */
+
+                    $(".notice-list").html(commentsHtml);
+                    //drawPage(pagination, params);  viewController 에서 넘겨준 params로 drawPage함수 사용할 때
+                    drawPage(pagination, page);     // json값 response.pageAttr.page 로 처리.
+                } else {
+                    commentsHtml += `<span class="name" style="text-align: center;">댓글이 없습니다.</span>`;
+                    $(".notice-list").html(commentsHtml);
+                    drawPage();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("ERROR : " + textStatus + " : " + errorThrown);
+            }
+        });  
+  
+
+        
+	}
+    
+
+
+    /*<![CDATA[*/
+
+    /*  
+    // 기존 게시글 삭제 (블로그 방식) list.html 페이징 처리 전 메소드
+    function deletePost() {
+      const id = [[${post.id}]];
+
+      if (!confirm(id + '번 게시글을 삭제할까요?') ) {
+        return false;
+      }
+
+      const formHtml = `
+          <form id="deleteForm" action="/post/delete.do" method="post">
+              <input type="hidden" id="id" name="id" value="${id}" />
+          </form>
+      `;
+      const doc = new DOMParser().parseFromString(formHtml, 'text/html');
+      const form = doc.body.firstChild;
+      
+      document.body.append(form);
+      document.getElementById('deleteForm').submit();
+    }
+    */
+
+    function deletePost() {
+
+        const id = [[${post.id}]];
+        
+        if (!confirm(id + '번 게시글을 삭제할까요?') ) {
+            return false;
+        }
+
+        let inputHtml = '';
+
+        new URLSearchParams(location.search).forEach((value, key) => {
+            console.log("value =============>" + value);
+            console.log("key =============>" + key);
+
+            inputHtml += `<input type="hidden" name="${key}" value="${value}" />`;
+        })
+
+      // script 템플릿 쓸 때 script변수도 ${xxx}로 사용 가능하다!
+      const formHtml = `
+          <form id="deleteForm" action="/post/delete.do" method="post">
+              ${inputHtml}
+          </form>
+      `;
+
+      const doc = new DOMParser().parseFromString(formHtml, 'text/html');
+      const form = doc.body.firstChild;
+      document.body.append(form);
+      document.getElementById('deleteForm').submit();
+    }
+
+
+
+
+
+    // 게시글 리스트 페이지로 이동 (파라미터 적용)
+    function goListPage() {
+        const queryString = new URLSearchParams(location.search);
+        queryString.delete('id');
+        location.href = '/post/list.do' + '?' + queryString.toString();
+    }
+
+    // 게시글 수정 페이지로 이동
+    function goWritePage() {
+        location.href = '/post/write.do' + location.search;
+    }
+
+
+
+
+
+
+
+    // 페이지 HTML draw
+    function drawPage(pagination, page) {
+
+        if ( !pagination || !page ) {
+        document.querySelector('.paging').innerHTML = '';
+        throw new Error('Missing required parameters...');
+        }
+
+        let html = '';
+
+        // 첫 페이지, 이전 페이지
+        // console.log(pagination.existPrevPage);
+        // console.log(pagination.startPage);
+        if (pagination.existPrevPage) {
+
+        // pagination.startPage 가 1일경우 1page로 이동
+        if(pagination.startPage == 1) {
+            html += `
+            <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>
+            <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 1})" class="page_bt prev">이전 페이지</a>
+        `;
+        // 그 외의 경우 pagination.startPage - 10 으로 이동 ex) pagination.startPage가 21이면 21-10 = 11페이지로 이동
+        }else {
+            html += `
+            <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>
+            <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 10})" class="page_bt prev">이전 페이지</a>
+        `;
+        }
+
+        }
+
+        // 페이지 번호
+        html += '<p>';
+        for (let i = pagination.startPage; i <= pagination.endPage; i++) {
+                
+        html += (i !== page) ? `<a href="javascript:void(0);" onclick="movePage(${i});">${i}</a>` : `<span class="on">${i}</span>`
+        }
+        html += '</p>';
+
+        // 다음 페이지, 마지막 페이지 (existNextPage는 page 10 이상)
+        if (pagination.existNextPage) {
+        html += `
+            <a href="javascript:void(0);" onclick="movePage(${pagination.endPage + 1});" class="page_bt next">다음 페이지</a>
+            <a href="javascript:void(0);" onclick="movePage(${pagination.totalPageCount});" class="page_bt last">마지막 페이지</a>
+        `;
+        }
+        document.querySelector('.paging').innerHTML = html;
+    }
+
+
+    // 페이지 이동
+    function movePage(page) {
+        
+
+        console.log('page =======> ' + page);
+
+        const id = [[${post.id}]];
+
+        const queryParams = {
+            id : id,
+            page: (page) ? page : 1,
+            recordSize: 10,
+            pageSize: 10
+        }
+
+        console.log(queryParams);
+        console.log(location.pathname);
+
+        location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
+    }
+
+
+
+
+
+
+
+    /*]]>*/
+  </script>
+</th:block>
+
+</html>

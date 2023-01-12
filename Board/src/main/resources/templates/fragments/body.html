@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<body th:fragment="main-body">
+    <div id="adm_wrap">
+        <header>
+            <div class="head">
+                <!-- <h1>게시판 프로젝트</h1> -->
+                <h1><a href="/chart/main.do">Admin</a></h1>
+                <div class="top_menu">
+
+
+
+                    <!-- 컨트롤러에서 계속 session정보를 넘겨줄 수 없는거 같은데.. 당부에서는 sec:authentication="principal.name"> 이렇게 받아주고 있음 -->
+                    <!-- 일단 차트 컨트롤러 /chart/main.do 에만 session 정보 userName 데이터 넘겨주고 있음 -->
+                    <div class="login_user"><strong><i class="far fa-user-circle"></i>[[${userName}]]</strong>님 반갑습니다.</div>
+                    <div class="logout"><button type="button" id="logoutBtn"><span class="skip_info">로그아웃</span><i
+                                class="fas fa-sign-out-alt"></i></button></div>
+                </div>
+            </div>
+        </header>
+
+
+        <!-- 모달 방법1 -->
+        <th:block layout:fragment="modal"></th:block>
+
+        <!-- 모달 방법2 -->
+        <!-- <th:block th:insert="common/view_modal :: view_modal"></th:block> -->
+
+
+        <div id="container">
+            <div class="menu_toggle"><span></span></div>
+            <!--/* 좌측 메뉴 영역 */-->
+            <div class="lcontent">
+
+                <nav>
+                    <ul>
+                        <li class="has_sub"><a href="javascript: void(0);" class="on"><span>페이지 관리</span></a>
+                            <ul id="qqq">
+                                <li><a href="/post/list.do">게시판</a></li>
+                                <li><a href="/chart/main.do" id="asd">차트(접속통계)</a></li> <!-- id 지우기 -->
+                                <li><a href="javascript: alert('준비 중입니다.');">캘린더형</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript: alert('준비 중입니다.');"><span>회원 관리</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="main-content">
+                <!--/* 우측 영역 */-->
+                <div class="rcontent">
+
+                    <!--/* 페이지별 컨텐츠 */-->
+                    <th:block layout:fragment="content"></th:block>
+
+                    <!-- 댓글 -->
+                    <th:block layout:fragment="add-content"></th:block>
+
+
+                </div>
+            </div>
+        </div>
+        <!--/* // #container */-->
+
+
+        <footer>Copyright(c)네임즈.All rights reserved.</footer>
+    </div>
+
+    <!-- <script th:src="@{/js/jquery-3.6.0.min.js}"></script> -->
+
+    <script th:src="@{/scripts/jquery.min.js}"></script>                <!-- 모달사용 필요 jquery  -->
+    <script th:src="@{/plugin/bootstrap/js/bootstrap.min.js}"></script> <!-- 모달사용 필용 jquery -->
+
+    <script th:src="@{/js/function.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+
+    <script th:src="@{/scripts/main.js}"></script>
+    <script th:src="@{/scripts/common.js}"></script>
+
+    <script src="https://kit.fontawesome.com/79613ae794.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+
+
+    <!-- validate.js 추가 -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script> <!-- CDN주소 -->
+    <!-- <script th:src="@{/scripts/jquery.validate.min.js}"></script> -->
+
+
+    <script th:inline="javascript">
+        
+        $(document).ready(function () {
+            
+
+            // 목록 클릭했을 때 class 추가 및 제거            
+            // $('#qqq > li > a').click(function(){
+            $('#qqq li a').click(function(){
+               console.log(this);
+               
+                //$('#qqq > li > a').removeClass("on");
+
+                $(this).addClass('on');
+                console.log('aaaa');
+                //$('.has_sub > ul > li > a.on').removeClass("on");
+
+                // $(this).attr("class", "on");    // 클래스 추가 유지가 안됨..
+            
+            });
+
+
+            var data = [[${userName}]];
+            //console.log(data);
+
+            $('#logoutBtn').click(function(){
+                location.href = '/logout.do';
+            });
+
+
+        })
+
+    </script>
+
+
+
+    <th:block layout:fragment="script"></th:block>
+</body>
+
+</html>
