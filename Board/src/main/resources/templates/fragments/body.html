@@ -13,7 +13,11 @@
 
                     <!-- 컨트롤러에서 계속 session정보를 넘겨줄 수 없는거 같은데.. 당부에서는 sec:authentication="principal.name"> 이렇게 받아주고 있음 -->
                     <!-- 일단 차트 컨트롤러 /chart/main.do 에만 session 정보 userName 데이터 넘겨주고 있음 -->
-                    <div class="login_user"><strong><i class="far fa-user-circle"></i>[[${userName}]]</strong>님 반갑습니다.</div>
+                    <!-- <div class="login_user"><strong><i class="far fa-user-circle"></i>[[${userName}]]</strong>님 반갑습니다.</div> -->
+
+                    <!-- 시큐리티 사용 -->
+                    Logged in user: <span sec:authentication="name"></span> | Roles: <span sec:authentication="principal.authorities"></span>
+
                     <div class="logout"><button type="button" id="logoutBtn"><span class="skip_info">로그아웃</span><i
                                 class="fas fa-sign-out-alt"></i></button></div>
                 </div>
@@ -35,14 +39,31 @@
 
                 <nav>
                     <ul>
-                        <li class="has_sub"><a href="javascript: void(0);" class="on"><span>페이지 관리</span></a>
-                            <ul id="qqq">
+                        <li class="has_sub">
+                            <a href="javascript: void(0);" class="on" id="aa">
+                                    <span>페이지 관리</span>
+                            </a>
+                            <ul id="qqq1">
                                 <li><a href="/post/list.do">게시판</a></li>
                                 <li><a href="/chart/main.do" id="asd">차트(접속통계)</a></li> <!-- id 지우기 -->
+                                <li><a href="/member/list.do">일반회원관리</a></li>
                                 <li><a href="javascript: alert('준비 중입니다.');">캘린더형</a></li>
                             </ul>
                         </li>
-                        <li><a href="javascript: alert('준비 중입니다.');"><span>회원 관리</span></a></li>
+
+                        <!--  
+                        <li class="has_sub"><a href="javascript: void(0);" class="on" id="bb"><span>회원 관리</span></a>
+                            <ul id="qqq2">
+                                <li><a href="/member/list.do">일반회원관리</a></li>
+                                <li><a href="javascript: alert('준비 중입니다.');">준비중</a></li>
+                            </ul>
+                        </li>
+                        -->
+
+
+
+                        <!-- <li><a href="/member/list.do"><span>회원 관리</span></a></li> -->
+
                     </ul>
                 </nav>
             </div>
@@ -91,6 +112,26 @@
         
         $(document).ready(function () {
             
+
+            // 아직 해결 못함..
+            /*
+            //$('#qqq1').css("display","none");
+            //$('#qqq2').css("display","none");
+
+            //$('.has_sub > a')[0].classList.remove('on');
+            //$('.has_sub > a')[1].classList.remove('on');
+              
+            $('.has_sub ul li').click(function(){
+                alert("dasdasdasdas");
+                this.parentNode.style.display = "block";
+
+            });
+            */
+
+
+
+
+
 
             // 목록 클릭했을 때 class 추가 및 제거            
             // $('#qqq > li > a').click(function(){

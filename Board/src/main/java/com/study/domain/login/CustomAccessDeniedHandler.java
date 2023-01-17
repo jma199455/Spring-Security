@@ -18,7 +18,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler{ // 시큐
             ServletException {
         
         //response.sendRedirect("/login2");
-        response.sendRedirect("/chart/main.do");
+        //response.sendRedirect("/chart/main.do");
+        response.sendRedirect("/errorAction");
         
     }
 

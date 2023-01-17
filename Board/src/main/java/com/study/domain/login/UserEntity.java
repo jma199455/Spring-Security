@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class UserEntity {
     
-    private String loginUserId;
+    private String loginUserId; // 어떻게해야 들어가는지 확인
     private String password;
 
 

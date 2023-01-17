@@ -24,4 +24,18 @@
         )
     </insert>
 
+
+    <!-- getUser  -->
+    <select id="getUser" parameterType="String" resultType="com.study.domain.login.UserEntity">
+        select *  from users
+        where id = #{value}
+    </select>
+
+    <!-- getUserRoles -->
+    <select id="getUserRoles" parameterType="int" resultType="com.study.domain.login.UserRoleEntity">
+        select *  from user_role
+        where user_id = #{value}
+    </select>
+
+    
 </mapper>

@@ -34,15 +34,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   AuthenticationFailureHandler userLoginFailHandler;
 
+  // security filter chain을 거치지 않게 설정
   @Override
-  public void configure(WebSecurity web) { // 자원에 대한 접근을 품
-    web.ignoring().antMatchers("/css/**", "/js/**", "/img/**");
+  public void configure(WebSecurity web) { // (정적?)자원에 대한 접근을 품 
+    web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/errorAction");
     //web.ignoring().antMatchers("/**");
   }
   
 
   
-  // CSRF get, post 확인용으로 설정해본 부분 
+  // CSRF get, post 확인용으로 설정해본 부분
   /*  
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -61,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
   http
-    .exceptionHandling()
+    .exceptionHandling() //
         //.authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인증실패 시 처리 , .loginPage 작성하고 주석 시 시큐리티 기본 폼으로 넘어감
         .accessDeniedHandler(new CustomAccessDeniedHandler())     // 인가 실패 시(권한불과 페이지 접근 시) 핸들러 설정  , .loginPage주석 시 시큐리티 기본 폼으로 넘어감
     .and()

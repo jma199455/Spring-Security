@@ -219,16 +219,21 @@ public class UsersController {
     */
 
 
-    /*  
     // 권한이 없는 페이지 접근 시 
-    @GetMapping("/error")
+    @GetMapping("/errorAction")
     public String getCustomAccessDeniedHandler(HttpSession session, Model model) {
 
         System.out.println("==========권한없는 페이지 로그 확인==========");
         return "error/authorityError";
 
     } 
-    */
+
+
+
+
+
+    
+    
 
 
 }
