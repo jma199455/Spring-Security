@@ -132,7 +132,6 @@ public class UsersController {
     }
     */
 
-
     // .loginProcessingUrl("/loginAction") 사용해서 시큐리티 로그인 정보 넘어가는지 확인하려고 만듬 --> 해당 컨트롤러 타지 못해서 확인 못함...
     @PostMapping("/loginAction")
     public String openLoginAction(UsersDto UsersDto) {    // @RequestParam지우고 스프링 시큐리티로 적용시켜보기 

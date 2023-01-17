@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .loginProcessingUrl("/loginAction")// 여기 뭐 들어가야하냐.. 이해 못함 !!!!!!!! 로그인 Form Action Url, 사용자 이름과 암호를 제출할 URL  , default="/login" 
         //.failureHandler(userLoginFailHandler) // 로그인 실패 핸들러 설정
         //.failureUrl("/login2?error=failure") // 로그인 실패 후 이동 페이지
-
+        //
         
         .usernameParameter("id")  // Id input의 name을 이 설정과 맞춰야 한다.          중요!!!!!!! 이부분 다르면 시큐리티 정보 안넘어감 시큐리티 폼과 맞춰야함!!!
         .passwordParameter("pw")  // Password input의 name을 이 설정과 맞춰야 한다.    중요!!!!!!! 이부분 다르면 시큐리티 정보 안넘어감 시큐리티 폼과 맞춰야함!!!
