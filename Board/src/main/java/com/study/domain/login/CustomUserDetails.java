@@ -35,7 +35,7 @@ public class CustomUserDetails implements UserDetails{
 	//////////////////////////////// 
 
 
-	// 1. 오버라이드 방법
+	// 1. 오버라이딩 방법
 	// loadUserByUsername 메소드에서 setter 후 CustomUserDetails를 return 할 경우 isEnabled, isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired setter 생성을 해준다.
 	// username, password, authorities 는 setter가 필수!
 	@Override
@@ -100,7 +100,7 @@ public class CustomUserDetails implements UserDetails{
 	}
 
 
-	// 2. 오버라이드 방법
+	// 2. 오버라이딩 방법
 	// loadUserByUsername 메소드에서 CustomUserDetails 필드를 setter를 사용하지 않고 return 할 경우 isEnabled, isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired setter를 생성을 하지 않고 getter return 값에 true를 넣어준다
 	// username, password, authorities 는 setter가 필수!
 

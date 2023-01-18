@@ -38,8 +38,7 @@ public class UsersController {
     }
 
 
-
-    // 
+    // 시큐리티 커스텀 로그인폼 처리 , 시큐리티 설정에서 .failureUrl("/login2?error=failure") 사용 안하고 기본 시큐리티 /error 처리 했음
     @GetMapping("/login2")     // 파라미터 이름이과  해당 url 변수 이름과 같으면 @RequestParam 생략 가능 !!
     public String openLoginForm(String error, Model model) {    // 스프링 시큐리티로 적용
                             
@@ -65,6 +64,7 @@ public class UsersController {
     }
 
     /*  
+    // 시큐리티 커스텀 로그인폼 처리 시큐리티 설정에서 .failureUrl("/login2?error=failure") 설정 했을 때 
     // loginForm.html 하나로만 error 문구 띄우기 , 
     //@GetMapping({"/", "/login2"})    // 2개 설정 , "/" 는 시큐리티 설정에서 자동으로 /login 으로 가도록 설정해줌
     @GetMapping("/login2")
@@ -82,7 +82,8 @@ public class UsersController {
     */
 
     
-    // .loginProcessingUrl("/loginAction") 사용해서 시큐리티 로그인 정보 넘어가는지 확인하려고 만듬 --> 해당 컨트롤러 타지 못해서 확인 못함...
+    // .loginProcessingUrl("/loginAction") 사용해서 시큐리티 로그인 정보 넘어가는지 확인하려고 만듬 --> 직접 구현하는 것이 아니라 스프링 시큐리티 필터가 자동으로 처리해준다. 
+    /*
     @PostMapping("/loginAction")
     public String openLoginAction(UsersDto UsersDto) {    // @RequestParam지우고 스프링 시큐리티로 적용시켜보기 
 
@@ -93,9 +94,10 @@ public class UsersController {
         return "login/loginFormAction";
                 
     }
+    */
 
 
-    // 시큐리티 사용 전 로그인 체크
+    // 시큐리티 사용 전 인터셉터 사용해서 로그인 체크 로직
     //@PostMapping("/loginCheck")
     @Transactional
     @PostMapping("/loginCheck")                     // form 데이터 받을 때 @modelAttrubute 안써도 가능한지 다시 확인
@@ -167,7 +169,7 @@ public class UsersController {
     */
 
 
-    // 권한이 없는 페이지 접근 시 
+    // 권한이 없는 페이지 접근 시 처리
     @GetMapping("/errorAction")
     public String getCustomAccessDeniedHandler(HttpSession session, Model model) {
 
@@ -175,8 +177,6 @@ public class UsersController {
         return "error/authorityError";
 
     } 
-
-
 
     // 마스터 권한 페이지 접근 시 
     @GetMapping("/master/list.do")
@@ -186,6 +186,8 @@ public class UsersController {
         return "admin/masterList";
 
     } 
+
+    // 회원 가입 처리 
 
     
     

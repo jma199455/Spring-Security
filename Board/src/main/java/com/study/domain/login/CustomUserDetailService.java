@@ -63,13 +63,11 @@ public class CustomUserDetailService implements UserDetailsService{
 
 
         /* LoginUtils클래스 getDetails 메소드에 null 값이 들어가고 있음 이유 모르겠음.. (나중에)
-        // LoginUtils.java 메소드 return 값 가져오기
+        // LoginUtils.java 메소드 return 값 가져오기  , 아직 처리 못함!!!
         customUserDetails.setUserAuthority(LoginUtils.getAuthority());
         String resultData = customUserDetails.getUserAuthority().getKey();
         System.out.println(" resultData 나오나 ==> " + resultData);
         */
-
-
 
 
 		// 로그인 한 사용자의 권한 정보를 GrantedAuthority를 구현하고 있는 SimpleGrantedAuthority객체에 담아
