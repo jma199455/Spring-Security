@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public enum UserAuthority implements ConstImpl{
   
-    ADMIN("관리자"), USER("유저");
+    ADMIN("관리자"), USER("유저"), MASTER("마스터");
 
 	@Getter
 	private String label;

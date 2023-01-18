@@ -2,10 +2,8 @@ package com.study.domain.login;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.connector.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -40,48 +38,42 @@ public class UsersController {
     }
 
 
-    @GetMapping("/login2")
-    public String openLoginForm(@RequestParam(value = "error", required = false) String param,
-                                @RequestParam(value = "exception", required = false) String exception
-                                , Model model) {    // @RequestParam지우고 스프링 시큐리티로 적용시켜보기 
 
-        System.out.println("error ====================> " + param);
-        System.out.println("exception ====================> " + exception);
+    // 
+    @GetMapping("/login2")     // 파라미터 이름이과  해당 url 변수 이름과 같으면 @RequestParam 생략 가능 !!
+    public String openLoginForm(String error, Model model) {    // 스프링 시큐리티로 적용
+                            
 
-        if (param != null) {
-            System.out.println("들어감ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ");
-            model.addAttribute("data", param);
-            model.addAttribute("exception", exception);
+        System.out.println("확인 ====================> ");
+        System.out.println("String error ======> " + error);
 
-            //return "login/loginForm";
-            return "login/loginForm";
+        // 해당 if문은 error 파라미터 자체가 null 일 경우 if문 수행할 때 오류가 난다.
+        if (error != null && error.equals("")) {
+            model.addAttribute("data", "failure22");
         }
 
+        // 공백 검수 방법 
+        /*  
+        if (!StringUtils.isEmpty(error)) {
+            model.addAttribute("data", error);     
+        }   
+        */
+
         return "login/loginForm";
+
+
     }
 
-
-
-
-
-
-
-
-
-
-
-
     /*  
-    // loginForm.html 하나로만 error 문구 띄우기
+    // loginForm.html 하나로만 error 문구 띄우기 , 
     //@GetMapping({"/", "/login2"})    // 2개 설정 , "/" 는 시큐리티 설정에서 자동으로 /login 으로 가도록 설정해줌
     @GetMapping("/login2")
-    public String openLoginForm(@RequestParam(value = "error", required = false) String param, Model model) {    // @RequestParam지우고 스프링 시큐리티로 적용시켜보기 
+    public String openLoginForm(@RequestParam(value = "error", required = false) String param, Model model) {    
 
         System.out.println("parammmmmmmmmmmmmm ====================> " + param);
         if (param != null) {
             System.out.println("들어감ㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱㄱ");
             model.addAttribute("data", param);
-            //return "login/loginForm";
             return "login/loginForm";
         }
 
@@ -89,49 +81,7 @@ public class UsersController {
     }
     */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // 확인 후 지우기
-    /*  
-   @GetMapping("/")
-    public String openLoginFormA(Model model, HttpSession session) {    // @RequestParam지우고 스프링 시큐리티로 적용시켜보기 
-
-        int temp = 123;
-
-        Object obj = session.getAttribute("login");
-        System.out.println("obj ========> " + obj);
-
-        model.addAttribute("data", temp);
-        
-
-        return "homeTest";
-    }
-    */
-
-    /*  
-    @PostMapping("/homeTestAction")
-    public String openLoginFormAction(@ModelAttribute UsersDto params) {    // @RequestParam지우고 스프링 시큐리티로 적용시켜보기 
-        System.out.println("params =============> " + params);
-
-        return "homeTest";
-    }
-    */
-
+    
     // .loginProcessingUrl("/loginAction") 사용해서 시큐리티 로그인 정보 넘어가는지 확인하려고 만듬 --> 해당 컨트롤러 타지 못해서 확인 못함...
     @PostMapping("/loginAction")
     public String openLoginAction(UsersDto UsersDto) {    // @RequestParam지우고 스프링 시큐리티로 적용시켜보기 
@@ -143,7 +93,6 @@ public class UsersController {
         return "login/loginFormAction";
                 
     }
-
 
 
     // 시큐리티 사용 전 로그인 체크
@@ -229,7 +178,14 @@ public class UsersController {
 
 
 
+    // 마스터 권한 페이지 접근 시 
+    @GetMapping("/master/list.do")
+    public String openMasterList() {
 
+        System.out.println("==========마스터 페이지 로그 확인==========");
+        return "admin/masterList";
+
+    } 
 
     
     
