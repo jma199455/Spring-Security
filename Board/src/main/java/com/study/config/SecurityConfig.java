@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   // security filter chain을 거치지 않게 설정
   @Override
   public void configure(WebSecurity web) { // (정적?)자원에 대한 접근을 품  , 시큐리티 적용 설정 부분
-    web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/errorAction");
+    web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/errorAction", "/signup", "/scripts/**", "/idCheck");
     //web.ignoring().antMatchers("/**");
   }
   

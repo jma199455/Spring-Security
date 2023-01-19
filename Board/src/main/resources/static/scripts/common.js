@@ -79,3 +79,4 @@ function isValid(field, fieldName, focusField) {
 function nvl(value1, value2) {
 	return (isEmpty(value1) == false ? value1 : value2);
 }
+

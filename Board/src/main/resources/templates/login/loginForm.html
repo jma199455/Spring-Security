@@ -43,37 +43,48 @@
         <button class="btn btn-lg btn-block" type="button" onclick="move()">회원가입</button>
     </form>
 
-    <!-- 여기서도 가능 script문  [추천]-->
-    <script th:inline="javascript">
-
-        var temp = [[${data}]];
-        console.log(temp);
-
-                
-        if (temp != null && temp != undefined) {
-                $('#asd').before('<div class="alert alert-danger" role="alert">로그인 정보를 다시 확인해주세요.</div><p>');
-
-                /*  
-                console.log($('div[class=form-label-group]')[0]);
-                $('#asd').before('<div class="alert alert-danger" role="alert">로그인 정보를 다시 확인해주세요.</div><p>'); // jquery로
-                */
-
-                /*  
-                var inner_box = document.createElement('div');
-                inner_box.setAttribute('class','alert alert-danger');
-                inner_box.setAttribute('role','alert');
-                inner_box.innerText = '로그인 정보를 다시 확인해주세요.';
-
-                // jquery추출 -> DOM객체 -> DOM객체로 .insertBefore 사용 $('div[class=form-label-group]')[0].insertBefore(inner_box, document.querySelector('#id')); 
-                */
-        }
+<!-- 여기서도 가능 script문  [추천]-->
+<script th:inline="javascript">
 
 
-        function move() {
-            location.href = '/signupForm';
-        }
+        
+$(document).ready(function () {       
+    
+    
+    
+    var temp = [[${data}]];
+    console.log(temp);
 
-    </script>
+    if (temp != null && temp != undefined) {
+
+        $('#asd').before('<div class="alert alert-danger" role="alert">로그인 정보를 다시 확인해주세요.</div><p>');
+
+        /*  
+        console.log($('div[class=form-label-group]')[0]);
+        $('#asd').before('<div class="alert alert-danger" role="alert">로그인 정보를 다시 확인해주세요.</div><p>'); // jquery로
+        */
+
+        /*  
+        var inner_box = document.createElement('div');
+        inner_box.setAttribute('class','alert alert-danger');
+        inner_box.setAttribute('role','alert');
+        inner_box.innerText = '로그인 정보를 다시 확인해주세요.';
+
+        // jquery추출 -> DOM객체 -> DOM객체로 .insertBefore 사용 $('div[class=form-label-group]')[0].insertBefore(inner_box, document.querySelector('#id')); 
+        */
+    }
+
+
+}); 
+
+    // 회원가입 페이지
+    function move() {
+        location.href = '/signupForm';
+    }
+
+
+</script>
+
 </body>
 
 

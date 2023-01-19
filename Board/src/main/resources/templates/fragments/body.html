@@ -18,8 +18,17 @@
                     <!-- 시큐리티 사용 -->
                     Logged in user: <span sec:authentication="name"></span> | Roles: <span sec:authentication="principal.authorities"></span>
 
+
+                    <!-- 커스텀 logout적용
                     <div class="logout"><button type="button" id="logoutBtn"><span class="skip_info">로그아웃</span><i
                                 class="fas fa-sign-out-alt"></i></button></div>
+                    -->
+
+                    <!-- // 시큐리티 기본 주소 /logout -->
+                    <div class="logout"><button type="button" id="logoutBtn"><span class="skip_info">로그아웃</span><i
+                        class="fas fa-sign-out-alt"></i></button></div>        
+                        
+                        
                 </div>
             </div>
         </header>
@@ -154,7 +163,8 @@
             //console.log(data);
 
             $('#logoutBtn').click(function(){
-                location.href = '/logout.do';
+                //location.href = '/logout.do';
+                location.href = '/logout'; // 시큐리티 기본 주소 /logout
             });
 
 

@@ -74,3 +74,4 @@ function popup_win(str,id,w,h,scrollchk){
 	var pop = window.open(str,id,"width="+w+",height="+h+",scrollbars="+scrollchk+",resize=no,location=no ");
 	pop.focus();
 }
+

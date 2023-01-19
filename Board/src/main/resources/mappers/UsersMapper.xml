@@ -37,5 +37,28 @@
         where user_id = #{value}
     </select>
 
-    
+    <!-- 회원가입 -->
+    <insert id="save" parameterType="com.study.domain.login.UsersDto">
+        insert into users(
+            id,
+            pw,
+            user_name,
+            create_date,
+            gender_code
+        ) 
+        values(
+            #{param.id},
+            #{param.pw},
+            #{param.userName},
+            now(),
+            #{param.genderCode}
+        )
+    </insert>
+
+    <!-- 아이디 중복 체크 -->
+    <select id="idCheck" parameterType="com.study.domain.login.UsersDto" resultType="int">
+        select count(*)  from users
+        where id = #{param.id}	
+    </select>
+
 </mapper>

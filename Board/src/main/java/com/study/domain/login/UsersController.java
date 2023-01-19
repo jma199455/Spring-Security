@@ -2,7 +2,6 @@ package com.study.domain.login;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,8 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.study.common.dto.MessageDto;
@@ -25,20 +25,37 @@ public class UsersController {
     @Autowired
     UsersService usersService;
 
+    // // 회원 가입 폼 
     @GetMapping("/signupForm")
     public String signupForm() {    
 
     return "login/signup";
     }
 
+    // 회원 가입 처리 ajax 처리 (반환값 String이면 에러남!!)
+    @ResponseBody
     @PostMapping("/signup")
-    public String signUpProc(@ModelAttribute UsersDto params, Model model) {    
+    public int signUpProc(@RequestBody UsersDto params, Model model) throws Exception {    
+        System.out.println("컨트롤러 확인");
 
-        return "redirect:/login";
+        int result = usersService.save(params);
+        return result;
     }
 
+    // 아아디 중복 검사
+    @ResponseBody
+    @PostMapping("/idCheck")
+    public int idCheckProc(@RequestBody UsersDto params) throws Exception {    
+        System.out.println("아이디 중복검사");
+        int result = usersService.idCheck(params);
+        return result;
+    }
+   
 
-    // 시큐리티 커스텀 로그인폼 처리 , 시큐리티 설정에서 .failureUrl("/login2?error=failure") 사용 안하고 기본 시큐리티 /error 처리 했음
+
+
+
+    // 시큐리티 커스텀 로그인폼 처리 , 시큐리티 설정에서 .failureUrl("/login2?error=failure") 사용 안하고 지금은 기본 시큐리티 /error 처리 했음
     @GetMapping("/login2")     // 파라미터 이름이과  해당 url 변수 이름과 같으면 @RequestParam 생략 가능 !!
     public String openLoginForm(String error, Model model) {    // 스프링 시큐리티로 적용
                             
@@ -152,8 +169,9 @@ public class UsersController {
         System.out.println("로그아웃 컨트롤러 들어옹ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
 
         session.invalidate(); // 세션 초기화 (시큐리티에서 세션만 제거하면 되는거 같음)
-        MessageDto message = new MessageDto("로그아웃이 완료되었습니다.", "/login2222", RequestMethod.GET, null);
-        return showMessageAndRedirect(message, model);
+        MessageDto message = new MessageDto("로그아웃이 완료되었습니다.", "/login2222", RequestMethod.GET, null);   // 여기 적용 안되는거 같음 다시 확인
+        //return showMessageAndRedirect(message, model); // 여기 적용 안되는거 같음 다시 확인
+        return "redirect:/login2";
     } 
 
     /*  
@@ -187,7 +205,7 @@ public class UsersController {
 
     } 
 
-    // 회원 가입 처리 
+    
 
     
     

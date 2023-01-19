@@ -32,8 +32,6 @@ public class CustomUserDetailService implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
 
-        
-
         UserEntity customUser = usersMapper.getUser(loginId);
         System.out.println(customUser);
         System.out.println("customUser ==================> " + customUser);
@@ -50,12 +48,12 @@ public class CustomUserDetailService implements UserDetailsService{
         // check!!! 비밀번호 암호화 설정 꼭 해야 인증이 넘어감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
         // 주의 하실 점은 User객체를 만드는 코드에 PasswordEncoder를 사용하여 DB에 저장된 원래 패스워드를 암호화하도록 코드가 짜여져 있는데요. 원래는 DB에 저장된 값 자체가 암호화 되어있어야합니다. 즉. 이미 넣을때 passwordEncoder를 통해 암호화된 문자열이 들어가있어야 하는데 편의상 저는 User객체를 리턴해줄때 암호화를 하였습니다.
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);  
-        String result = encoder.encode(customUser.getPw()); // 서버 내에서 인코딩해주기 때문에 로딩 시간 오래걸리고 있는 것 같음 , insert할때 암호화 하고 해당 코드 부분 주석처리 해        System.out.println(result);
+        // 회원가입 암호화 전 String result = encoder.encode(customUser.getPw()); // 서버 내에서 인코딩해주기 때문에 로딩 시간 오래걸리고 있는 것 같음 , insert할때 암호화 하고 해당 코드 부분 주석처리 해        System.out.println(result);
         // check!!! 비밀번호 암호화 설정 꼭 해야 인증이 넘어감!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         customUserDetails.setUsername(customUser.getId());
-        //customUserDetails.setPassword(customUser.getPw()); // 그냥 암호화 없이 UserDetails 넘기면 로그인 인증되지 않음!!!!
-        customUserDetails.setPassword(result); // User객체를 리턴해줄때 암호화. 
+        customUserDetails.setPassword(customUser.getPw()); // 그냥 암호화 없이 UserDetails 넘기면 로그인 인증되지 않음!!!!
+        // 회원가입 암호화 전 customUserDetails.setPassword(result); // User객체를 리턴해줄때 암호화. 
 
         // 사용자 권한 정보
         List<UserRoleEntity> customRoles = usersMapper.getUserRoles(customUser.getUserSeq());

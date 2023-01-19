@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-
+                  
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
@@ -10,7 +10,26 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/signin.css}" />
 
+
+
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script> <!-- jQuery validation plugin -->
+    <script th:src="@{/scripts/common.js}"></script> <!-- isEmpty 함수 사용 -->
+
+
+
 </head>
+
+
+<style>
+
+    .error {
+        color: rgba(231, 74, 59, 0.9);
+    }
+
+</style>
+
 
 <body>
     <div class="container">
@@ -20,47 +39,51 @@
             <div class="py-5 text-center">
                 <h2>회원가입</h2>
             </div>
-            
-            <form class="needs-validation" novalidate th:action="@{/signup}" method="POST">
-            <!-- <form class="needs-validation" action="/signup" method="POST"> -->    
+             <!-- <form id="saveForm" class="needs-validation" th:action="@{/signup}" method="POST"> -->
+            <!-- <form class="needs-validation" action="/signup" method="POST"> -->               
+            <form id="saveForm" class="needs-validation">    
+                <!-- required , 우선 jQuery validation plugin 사용 -->
+                <!--  
                 <div class="mb-3">
                     <label for="username">아이디</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                         </div>
-                        <input type="text" class="form-control" id="username" placeholder="아이디" required name="id" autocomplete="off">
+                        <input type="text" class="form-control" id="username" placeholder="아이디" name="id" autocomplete="off">    
                         <div class="invalid-feedback" style="width: 100%;">Your username is required.</div>
                     </div>
                 </div>
-                
+                -->
                 <div class="mb-3">
-                    <label for="password">비밀번호</label> 
-                    <input type="password" class="form-control" id="password" placeholder="비밀번호" value="" required name="pw" autocomplete="new-password">
-                    <div class="invalid-feedback">유효한 비밀번호가 필요합니다.</div>
+                    <label for="username">아이디</label>
+                    <input type="text" class="form-control" id="id" placeholder="아이디를 입력해주세요." name="id" autocomplete="off">
+                    <input type="button" id="check" value="아이디 중복 검사">
+                    <div class="invalid-feedback">아이디를 입력해야합니다.</div>
+                    <input type="number" class="form-control" id="idCheck" name="idCheck" readonly style="width: 0; height: 0; border: 0; margin: 0; padding: 0;">
                 </div>
 
+                <div class="mb-3">
+                    <label for="password">비밀번호</label> 
+                    <input type="password" class="form-control" id="password" placeholder="비밀번호를 입력해주세요." name="pw" autocomplete="new-password">
+                    <div class="invalid-feedback">비밀번호를 입력해야합니다.</div>
+                </div>
 
                 <div class="mb-3">
                     <label for="firstName">이름</label> 
-                    <input type="text" class="form-control" id="real-name" placeholder="" value="" required name="userName">
-                    <div class="invalid-feedback">유효한 이름을 입력해야합니다.</div>
+                    <input type="text" class="form-control" id="userName" placeholder="이름을 입력해주세요." name="userName">
+                    <div class="invalid-feedback">이름을 입력해야합니다.</div>
                 </div>
 
                 <div class="mb-3">
-                    <input type="radio" id="genderCode1" name="genderCode" value="M" required checked>
+                    <input type="radio" id="genderCode1" name="genderCode" value="M" checked> 
                     <label for="genderCode1">남자</label>
-                    <input type="radio" id="genderCode2" name="genderCode" value="F" required>
+                    <input type="radio" id="genderCode2" name="genderCode" value="F">
                     <label for="genderCode2">여자</label>                    
-                    <div class="invalid-feedback">성별을 선택하세요.</div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="email">이메일</label>
-                    <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email">
-                    <div class="invalid-feedback">올바른 이메일을 입력하세요.</div>
+                    <div class="invalid-feedback" >성별을 입력해야합니다.</div>
                 </div>
 
                 <hr class="mb-4">
+                <!-- <button class="btn btn-lg btn-primary btn-block" type="submit">가입하기</button> validate 체크전 --> 
                 <button class="btn btn-lg btn-primary btn-block" type="submit">가입하기</button>
                 <button class="btn btn-primary btn-lg btn-block" type="button" onclick="move();">로그인페이지</button>
                 <hr class="mb-4">
@@ -70,17 +93,179 @@
 
     </div>
     
-    <script th:inline="javascript">
+<script th:inline="javascript">
+
+$(document).ready(function () {  
+
+    // 아이디 중복 체크 버튼
+    $("#check").click(function() {
+        
+        // $('#id').val() 값이 "" 이거나 " " null undefine이 아닐경우 
+        var temp = isEmpty($('#id').val());
+        console.log(temp); // true 
+
+        // 아이디 값이 값이 있을 경우 ajax 처리
+        if (!temp) {
+            var url = "/idCheck";
+            var data = { id : $('#id').val()};
+            console.log(JSON.stringify(data));
+
+            // ajax
+            $.ajax({
+                type: 'post',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                url: url,
+                dataType: "json",
+                success: function (data) {
+
+                    console.log(data);
+                    alert("중복 아이디처리 성공");
+                    if(data > 0) {
+                        alert("사용할 수 없는 아이디 입니다.");
+                        //location.href = "/login2";
+                    } else {
+                        alert("사용 가능한 아아디 입니다.");
+                        $("#idCheck").val(1);
+                        $("#idCheck-error").remove();   // 에러 엘리먼트 제거
+
+                        //location.href = "/signupForm";
+                    }
+                    //location.href = "/signupForm";
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("ERROR : " + textStatus + " : " + errorThrown);
+                }
+            });
 
 
-
-        function move() {
-            location.href = '/login';
+        } else {
+            location.href = "/signupForm";
         }
 
 
-    </script>
+    });
+        
+});
 
+        /* jQuery validation plugin 사용  $(document).ready(function () { 안에 들어가있으면 submit이 먹히지 않는다. */   
+        //$('#saveForm').validate({
+        $('form').validate({
+
+            rules : {
+                id : {
+                    required : true
+                }, 
+                pw : {
+                    required : true
+                }, 
+                userName : {
+                    required : true
+                },
+                genderCode : {
+                    required : true
+                },
+                idCheck : {
+                    required : true
+                }
+
+            }, 
+            messages : {
+                id : {
+                    required : "아이디를 입력해 주세요."
+                },
+                pw : {
+                    required : "비밀번호 입력해 주세요."
+                }, 
+                userName : {
+                    required : "이름 입력해 주세요."
+                },
+                idCheck : {
+                    required : "아이디 중복검사는 필수입니다."
+                }
+
+            }
+            ,
+            // 여기 주석처리해도 에러메시지 적용 됨....
+            /*
+            highlight: function (element) {     // 기본값 : errorClass 를 추가시킨다
+                console.log("element11111111");
+                console.log(element);
+
+                //$(element).parent().addClass('error')
+                $(element).next().addClass('error')
+            },
+            unhighlight: function (element) {   // 기본값 : errorClass 를 제거한다.
+                console.log("element22222222");
+                console.log(element);
+                //$(element).parent().removeClass('error')
+                $(element).next().removeClass('error');
+            },
+            */
+            submitHandler: function (){ // 검증 성공시 다음 처리, ajax로 submit 처리 시 사용
+                //e.preventDefault();
+                //e.stopPropagation();
+                //alert("검증성공");
+                save(); 
+            }
+        });
+
+
+    function save() {
+
+    var data = $('form').serializeArray();
+    console.log(data);
+    var url = '/signup';
+    
+    var id = $("#id").val();
+    var pw = $("#password").val();
+    var userName = $("#userName").val();
+    var genderCode = $("input[name=genderCode]").val();
+    var data = {
+                id : id,
+                pw : pw,
+                userName : userName,
+                genderCode : genderCode
+            };
+
+    console.log(data);
+
+        //form.action = '/login2';
+        //form.submit();
+
+        $.ajax({
+            type: 'post',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            url: url,
+            dataType: "json",
+            success: function (data) {
+                alert("처리 성공");
+                
+                if(data > 0) {
+                    alert("성공 로그인페이지로 이동");
+                    location.href = "/login2";
+                } else {
+                    alert("실패 회원가입 페이지로 이동");
+                    location.href = "/signupForm";
+                }
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("ERROR : " + textStatus + " : " + errorThrown);
+            }
+        });   
+
+    }
+
+    // 로그인 페이지로
+    function move() {
+        location.href = '/login';
+    }
+
+
+</script>
 
 </body>
 
