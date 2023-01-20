@@ -12,6 +12,9 @@ public class UserEntity {
     private int userSeq; // 시퀀스 
     private String id;  // 아이디
     private String pw;  // 비밀번호
+    private String createDate; // 등록일 (로그인 테이블 등록)
+
+
 
     //private String userName;   // 사용자이름 
     //private String createDate; // 회원가입일

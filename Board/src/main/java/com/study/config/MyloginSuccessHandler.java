@@ -50,6 +50,15 @@ public class MyloginSuccessHandler implements AuthenticationSuccessHandler{
             // 가능한가
             ModelAndView model = new ModelAndView();
             model.addObject("greeting", session.getAttribute("greeting"));
+
+
+
+
+
+
+
+
+
             response.sendRedirect("/chart/main.do");
             // response.sendRedirect("/");
         

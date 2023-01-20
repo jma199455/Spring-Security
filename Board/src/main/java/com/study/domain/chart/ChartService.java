@@ -78,8 +78,6 @@ public class ChartService {
             } else {
                 line = chartMapper.getListLine2(request);   // 방문자수
             }
-
-
              
             for(int i = 0; i < labels.size(); i++) {
 				men[i] = women[i] = total[i] = 0; // 초기화 꼭 해야함 (data값이 없는 경우 0으로 표시해야 하기 때문에!!!) 

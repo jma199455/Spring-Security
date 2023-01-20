@@ -11,7 +11,7 @@
     </select>
 
 
-    <insert id="insert" parameterType="com.study.domain.login.UsersDto">
+    <insert id="insert" parameterType="com.study.domain.login.UserEntity">
         insert into btc_login_h(
             user_seq,
             login_dtm,

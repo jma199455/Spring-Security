@@ -19,11 +19,22 @@ public class UsersService {
 
     }
 
+    // CustomUserDetailService 에서 처리
+    public int insert(UserEntity customUser) throws Exception{
+
+        return usersMapper.insert(customUser);
+
+    }
+
+
+    /*  /loginCheck 사용할 때
     public int insert(UsersDto usersDto) throws Exception{
 
         return usersMapper.insert(usersDto);
 
     }
+    */
+
 
     public int save(UsersDto usersDto) throws Exception {
 

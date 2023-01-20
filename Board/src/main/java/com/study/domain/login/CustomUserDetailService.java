@@ -21,7 +21,14 @@ public class CustomUserDetailService implements UserDetailsService{
     //데이터베이스에서 로그인 아이디에 해당하는 정보를 읽어 들이기 위해서
     //UserDbService를 구현한 객체를 주입받고 있다.
     @Autowired
-    UsersMapper usersMapper;
+    private UsersMapper usersMapper;
+
+
+    @Autowired
+    private UsersService usersService;
+
+
+
 
     //@Autowired
     //private final PasswordEncoder passwordEncoder;
@@ -83,6 +90,13 @@ public class CustomUserDetailService implements UserDetailsService{
 		customUserDetails.setAccountNonExpired(true);         // customUserDetails에서 getter return true로 설정가능
 		customUserDetails.setAccountNonLocked(true);           // customUserDetails에서 getter return true로 설정가능
 		customUserDetails.setCredentialsNonExpired(true); // customUserDetails에서 getter return true로 설정가능
+
+
+        try {
+            usersService.insert(customUser);    // 로그인 테이블 등록 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return customUserDetails;
     }

@@ -40,9 +40,6 @@ public class ChartController {
         */
         // end 
 
-        
-
-
         List<String> labels = new ArrayList<>();
         System.out.println(labels.size()); // 0
 

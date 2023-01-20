@@ -104,13 +104,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                               HttpServletResponse response, 
                                               Authentication authentication) throws IOException, ServletException {
-              System.out.println("authentication:: "+ authentication.getName());
-
+              System.out.println("authentication:: "+ authentication.getName()); // 아이디 확인
               response.sendRedirect("/chart/main.do");
           }
-          
         })
-
 
     .and()
     .logout() 
