@@ -4,14 +4,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
-
-import com.study.common.util.LoginUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +22,7 @@ public class ChartService {
     public StatisticsLineResVO getLine(ChartRequestVO request, String type) throws Exception {
 
         /*  
-        //Security 사용자 정보 가져오기
+        //Security 사용자 정보 가져오기 지금 사용 X
         String username = LoginUtils.getDetails().getUsername(); // 계정 고유한 값
         System.out.println(username);
         Collection<? extends GrantedAuthority> authority = LoginUtils.getDetails().getAuthorities(); // 권한
@@ -35,9 +31,8 @@ public class ChartService {
         */
 
 
-
         
-        // StatisticsLineResVO result = new StatisticsLineResVO(); setter 로 값넣고 리턴할 때 사용
+        //StatisticsLineResVO result = new StatisticsLineResVO(); //setter 로 값넣고 리턴할 때 사용
 
         // 전일 ~ 1주일 전 까지 날짜
         List<String> labels = new ArrayList<>();
@@ -68,6 +63,7 @@ public class ChartService {
 			women = new Integer[labels.size()];
 			total = new Integer[labels.size()];
 
+            
             List<StatisticsGenderBarVO> line = new ArrayList<>();  // 쿼리 결과 담아올 리스트
 
             log.debug("cccccccccccccccccccccccccccc ====> " + request.getStartDt());
@@ -79,7 +75,7 @@ public class ChartService {
                 line = chartMapper.getListLine2(request);   // 방문자수
             }
              
-            for(int i = 0; i < labels.size(); i++) {
+            for(int i = 0; i < labels.size(); i++) { 
 				men[i] = women[i] = total[i] = 0; // 초기화 꼭 해야함 (data값이 없는 경우 0으로 표시해야 하기 때문에!!!) 
                                                   // 초기화 하지 않으면 데이터가 있는 날짜만 표시됨
 				for(StatisticsGenderBarVO vo : line) {
@@ -92,8 +88,8 @@ public class ChartService {
 				}
 			}
 
-            /*  
             // return 생성자 사용하지 않고 setter 로 return 하기
+            /*  
             result.setLabels(labels.stream().toArray(String[]::new));
             result.setMen(men);
             result.setWomen(women);
@@ -121,10 +117,10 @@ public class ChartService {
         System.out.println(temp);
 
         // 같은 의미 생성자로 return  
-        return new StatisticsLineResVO(labels.toArray(String[]::new), men, women, total);	
+        return new StatisticsLineResVO(labels.toArray(String[]::new), men, women, total);
         //return new StatisticsLineResVO(labels.stream().toArray(String[]::new), men, women, total);	// Stream API 사용 labels.toArray(String[]::new)랑 의미는 같음 
 
-        // return result; setter사용시 리턴
+        //return result; // setter사용시 리턴
 
 
 

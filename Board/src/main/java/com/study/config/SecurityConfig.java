@@ -23,6 +23,7 @@ import com.study.domain.login.CustomAccessDeniedHandler;
 import com.study.domain.login.CustomUserDetailService;
 
 @Configuration
+
 @EnableWebSecurity // security 등록 어노테이션 
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // WebSecurityConfigurerAdapter 사용하려면 build.gradle plugins 부분 변경

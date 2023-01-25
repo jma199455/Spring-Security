@@ -38,9 +38,9 @@ dependencies {
 	/* implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0' 함수 적용 안됨 이유 찾아보기*/
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-	implementation 'org.springframework.boot:spring-boot-starter-security' /* security적용 */
-	implementation 'org.springframework.security:spring-security-test'		/* security적용 */
-	implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'	/* security적용 */
+	implementation 'org.springframework.boot:spring-boot-starter-security'  /* security적용 */
+	implementation 'org.springframework.security:spring-security-test' 		/* security적용 */
+	implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE' 	/* security적용 */
 
 
 }

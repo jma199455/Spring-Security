@@ -53,8 +53,9 @@ public class ChartController {
 
         //StatisticsLineResVO data = chartService.getLine(search);    // 확인
         //model.addAttribute("data", data);
-        model.addAttribute("data", chartService.getLine(search, "L1"));
-        model.addAttribute("data2", chartService.getLine(search, "L2"));
+        
+        model.addAttribute("data", chartService.getLine(search, "L1")); // 방문횟수
+        model.addAttribute("data2", chartService.getLine(search, "L2"));    // 방문자수
 
         return "chart/main";
     }

@@ -10,8 +10,15 @@ import lombok.NoArgsConstructor;
 public class StatisticsLineResVO {
     
     private String[] labels;
-	private Integer[] total;
 	private Integer[] men;
 	private Integer[] women;
+	private Integer[] total;
+
+
+	/*  
+	public StatisticsLineResVO(){
+
+	}
+	*/
 
 }
