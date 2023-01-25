@@ -56,6 +56,7 @@ public class UsersController {
 
 
     // 시큐리티 커스텀 로그인폼 처리 , 시큐리티 설정에서 .failureUrl("/login2?error=failure") 사용 안하고 지금은 기본 시큐리티 /error 처리 했음
+    //@GetMapping({"/", "/login2"})
     @GetMapping("/login2")     // 파라미터 이름이과  해당 url 변수 이름과 같으면 @RequestParam 생략 가능 !!
     public String openLoginForm(String error, Model model) {    // 스프링 시큐리티로 적용
                             

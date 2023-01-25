@@ -192,7 +192,7 @@ $(document).ready(function () {
         }
     });
 
-    /* 비밀번호 확인 일치 유효성 검사 */
+    /* 비밀번호 확인 일치 유효성 검사 이벤트*/
     $('#passwordConfirm').on("propertychange change keyup paste input", function(){
 
         var pw = $('#password').val();
@@ -234,7 +234,7 @@ $(document).ready(function () {
                 },
                 passwordConfirm : {
                     required : true,
-                    //equalTo : "#password" // #아이디
+                    //equalTo : "#password" // #아이디 , (비밀번호 확인)
                 }
 
             }, 
@@ -253,7 +253,7 @@ $(document).ready(function () {
                 },
                 passwordConfirm : {
                     required : "비밀번호 확인을 해주세요.",
-                    //equalTo : "암호를 다시 확인하세요."
+                    //equalTo : "암호를 다시 확인하세요."   // (비밀번호 확인)
                 }
 
             }
@@ -304,7 +304,6 @@ $(document).ready(function () {
                     $('.pwck_input_re_2').css('display','block');
                     $('#passwordConfirm').focus();
                 }
-
 
             }
         });
