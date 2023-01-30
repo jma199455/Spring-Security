@@ -118,11 +118,11 @@
         }
       });
 
+      console.log($('[name=keyword]').val()); 
+      console.log($('[name=keyword]')[0].value);
 
 
     });
-
-
 
     // 쿼리 스트링 파라미터 셋팅 (키워드, 검색 조건, 페이징 유지하기)
     function setQueryStringParams() {
@@ -139,6 +139,7 @@
 
         urlParams.forEach((value, key) => {
             if (form[key]) {
+              
                 form[key].value = value;
             }
         })

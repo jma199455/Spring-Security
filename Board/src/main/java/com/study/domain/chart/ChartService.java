@@ -102,7 +102,7 @@ public class ChartService {
 
         // toArray 사용 (배열 선언과 동시에 할당) , List를 String Array로 바꿈
         /* 1. 
-        String[] arr = labels.toArray(String[]::new);  String[]::new 사용
+        String[] arr = labels.toArray(String[]::new);  String[]::new 사용  java11~ 이상	
         */
         /* 2. 
         String[] arr = labels.toArray(new String[0]);  new String[0] 사용 toArray인자로 넘어가는 배열 객체 사이즈보다 list size가 더 커서 list size로 배열 반환
@@ -113,6 +113,7 @@ public class ChartService {
         arr = labels.toArray(arr);
         */
 
+        // 데이터 확인
         String[] temp = labels.toArray(String[]::new);  // List를 String Array로 바꿈
         System.out.println(temp);
 

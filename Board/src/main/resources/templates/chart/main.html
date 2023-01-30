@@ -8,6 +8,7 @@
   <div class="page_tits">
     <h3>차트</h3>
     <p class="path"><strong>현재 위치 :</strong> <span>게시판 관리</span> <span>차트(접속통계)</span></p>
+    <a href="">확인</a>
   </div>
 
   <div class="content">
@@ -26,7 +27,16 @@
 <th:block layout:fragment="script"> <!-- 스크립트 들어갈 부분 -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script th:inline="Javascript">
+
+    <script th:inline="javascript">
+
+      $(document).ready(function(){
+
+
+          
+      });
+
+
       var ctx = document.getElementById('test1').getContext('2d');
 
       var resultData = [[${data}]];       // 방문횟수

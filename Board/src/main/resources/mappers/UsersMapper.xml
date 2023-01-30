@@ -10,7 +10,6 @@
         where id = #{id} and pw = #{pw}
     </select>
 
-
     <insert id="insert" parameterType="com.study.domain.login.UserEntity">
         insert into btc_login_h(
             user_seq,
@@ -30,6 +29,15 @@
         select *  from users
         where id = #{value}
     </select>
+
+    <!-- ChartController에서 사용 유저 정보 -->
+    <select id="getUserA" parameterType="Map" resultType="com.study.domain.login.UserEntity">
+        select *  from users
+        where id = #{username}
+        and pw = #{password}
+    </select>
+
+
 
     <!-- getUserRoles -->
     <select id="getUserRoles" parameterType="int" resultType="com.study.domain.login.UserRoleEntity">

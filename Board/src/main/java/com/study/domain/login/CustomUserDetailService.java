@@ -12,8 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.study.common.util.LoginUtils;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class CustomUserDetailService implements UserDetailsService{
 
@@ -44,6 +46,7 @@ public class CustomUserDetailService implements UserDetailsService{
         System.out.println("customUser ==================> " + customUser);
 
 		if(customUser==null) {
+            log.debug("User not found [{}]", loginId);
 			throw new UsernameNotFoundException("사용자가 입력한 아이디에 해당하는 사용자를 찾을 수 없습니다.");    // 해당 메세지가 안뜸, 이유 모르겠음..
         }
 
@@ -67,7 +70,7 @@ public class CustomUserDetailService implements UserDetailsService{
         System.out.println("customRoles ====> " + customRoles);
 
 
-        /* LoginUtils클래스 getDetails 메소드에 null 값이 들어가고 있음 이유 모르겠음.. (나중에)
+        /* LoginUtils클래스 getDetails 메소드에 null 값이 들어가고 있음 이유 모르겠음.. (나중에 다시 확인해기!!!!!)
         // LoginUtils.java 메소드 return 값 가져오기  , 아직 처리 못함!!!
         customUserDetails.setUserAuthority(LoginUtils.getAuthority());
         String resultData = customUserDetails.getUserAuthority().getKey();
@@ -92,11 +95,14 @@ public class CustomUserDetailService implements UserDetailsService{
 		customUserDetails.setCredentialsNonExpired(true); // customUserDetails에서 getter return true로 설정가능
 
 
+        // 로그인 테이블 등록 해당 메소드에 사용할 경우 (현재 chartController /chart/main.do 에서 로그인 테이블 등록 처리 하고있음)
+        /*  
         try {
             usersService.insert(customUser);    // 로그인 테이블 등록 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
 
         return customUserDetails;
     }
