@@ -5,17 +5,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,34 +67,34 @@ public class CommentController {
 
         int listSize = commentList.size();
 
-        for (int i=0; i < listSize; i++) {
-            
-            noticeInfo = commentList.get(i);
+        // 이게 깔끔
+        for (CommentDto noticeInfo2 : commentList) {
+
             CommentDto dto = new CommentDto();
-
-            dto.setIdx(noticeInfo.getIdx());
-            dto.setBoardIdx(noticeInfo.getBoardIdx());
-            dto.setContent(noticeInfo.getContent());
-            dto.setWriter(noticeInfo.getWriter());
-            dto.setDeleteYn(noticeInfo.getDeleteYn());
-            dto.setInsertTime(noticeInfo.getInsertTime());
-
+            dto.setIdx(noticeInfo2.getIdx());
+            dto.setBoardIdx(noticeInfo2.getBoardIdx());
+            dto.setContent(noticeInfo2.getContent());
+            dto.setWriter(noticeInfo2.getWriter());
+            dto.setDeleteYn(noticeInfo2.getDeleteYn());
+            dto.setInsertTime(noticeInfo2.getInsertTime());
             list.add(dto);
-            
+
         }
+
         //String jsonInString = mapper.writeValueAsString(list);  // Json 문자열로 변환!!!
         //System.out.println(jsonInString);
         // JsonParser jsonParser = new JsonParser(); 사용할 수 가 없음.
 
         JSONObject jsonObj = new JSONObject();
         // jsonObj.put("commentList", jsonInString); Json 문자열이 리턴되고 있음.. 
-        jsonObj.put("commentList", list); // list를 JSONObject에 넣어주면 정상적으로 데이터 확인이 되고 있음 , jackson은 따로 writeValueAsString와 JsonParser를 안해줘도 되는지....확실하지 않음..
+        jsonObj.put("commentList", list); // list를 JSONObject에 넣어주면 정상적으로 데이터 확인이 되고 있음 , jackson은 따로 writeValueAsString와 JsonParser를 안해줘도 된다.
         
         return jsonObj;
 
 	}
     */
-    
+
+
     /*  
     // Jackson 사용
     // (1. HashMap<String,Object> JSONObject 리턴하기 )
@@ -140,12 +137,61 @@ public class CommentController {
 
     }
     */
+   
+
+    /*  
+    // Gson 라이브러리 사용 
+    // (1. HashMap<String,Object> JsonObject로 리턴하기 )
+	@GetMapping(value = "/comments/{boardIdx}")
+	public JsonObject getCommentList(@PathVariable("boardIdx") int boardIdx, @ModelAttribute("params") CommentDto params) throws JsonProcessingException, JSONException, ParseException {
+
+		List<CommentDto> commentList = commentService.getCommentList(params);
+
+        ObjectMapper mapper = new ObjectMapper(); // writeValueAsString 함수 사용
+        //List<CommentDto> list = new ArrayList<>(); 
+
+        int listSize = commentList.size();
+
+        //HashMap<String,Object> contents = null; 메모리 낭비
+        JsonArray jsonArr = new JsonArray(); // JsonArray 선언 (for문 밖에서 return 해주기 위해서)
+
+        HashMap<String,Object> contents = new HashMap<>();
+
+        for (int i=0; i < listSize; i++) {
+            CommentDto noticeInfo = new CommentDto(); // for문 밖에 선언해도 상관없음
+            noticeInfo = commentList.get(i);
+
+            //contents = new HashMap<>(); 메모리 낭비
+            // 각 필드 map에 mapping
+            contents.put("idx", noticeInfo.getIdx());
+            contents.put("boardIdx", noticeInfo.getBoardIdx());
+            contents.put("content", noticeInfo.getContent());
+            contents.put("writer", noticeInfo.getWriter());
+            contents.put("deleteYn", noticeInfo.getDeleteYn());
+            contents.put("insertTime", noticeInfo.getInsertTime());
+            
+            String temp = mapper.writeValueAsString(contents);  // Json 문자열로 변환
+            JsonParser jsonParser = new JsonParser();
+            JsonElement jsonElement = jsonParser.parse(temp);   // JsonParser.parse를 이용하여 문자열을 JsonElement로 변환
+            jsonArr.add(jsonElement);   // jsonArr.add(JsonElement or JsonObject가 들어간다!!);
+            //jsonArr.add(jsonParser.parse(temp));   // map이여서 따로 jsonElement로 변환 하지 않아도 된다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 결과 같음!!!
+
+
+
+        }
+
+        JsonObject jsonObj = new JsonObject(); // 마지막 return 핧 jsonObject 객체 선언
+        jsonObj.add("commentList", jsonArr); // 객체에 jsonArr 넣기
+
+        return jsonObj; // return
+	}
+    */                
 
     // Gson 라이브러리 사용 
     // (1. List<CommentDto> JsonObject로 리턴하기 )
     @GetMapping(value = "/comments/{boardIdx}")                              // 파라미터로 요청값을 받음
 	public JsonObject getCommentList(@PathVariable("boardIdx") int boardIdx, @ModelAttribute CommentDto params) throws JsonProcessingException, JSONException {
-                                     // 여기 지우고 params 확인해보기
+                                     // 여기 지우고 params 확인해보기 -> 정상작동
     /*
     @RequestParam 로 각자 받을 수도 있음
 	public JsonObject getCommentList(@PathVariable("boardIdx") int boardIdx
@@ -166,8 +212,9 @@ public class CommentController {
         System.out.println("boardIdx ===========================> " + boardIdx);
         System.out.println("params확인ㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴㄴ : " + params);
 
-        // 리스트 풀력
-		List<CommentDto> commentList = commentService.getCommentList(params);
+        // 리스트 출력
+        List<CommentDto> commentList = commentService.getCommentList(params);
+        System.out.println(commentList);
 
         // 댓글 페이징 그리기 처리 PaginationComment 클래스
         CommentDto pageDto = commentService.getcommentlListPage(params);
@@ -203,16 +250,21 @@ public class CommentController {
             dto.setWriter(noticeInfo.getWriter());
             dto.setDeleteYn(noticeInfo.getDeleteYn());
             dto.setInsertTime(noticeInfo.getInsertTime());
+            // commentList에 getPagination 넣을 경우 사용 dto.setPagination(noticeInfo.getPagination());
+
             list.add(dto);  // List<CommentDto> 에 넣기
         }
-            
+  
+        System.out.println(list);
         String temp = mapper.writeValueAsString(list);  // Json 문자열로 변환
+        System.out.println(temp);
+
         JsonParser jsonParser = new JsonParser();
-        jsonElement = jsonParser.parse(temp);   // JsonParser.parse를 이1용하여 문자열을 JsonElement로 변환
+        jsonElement = jsonParser.parse(temp);   // JsonParser.parse를 이용하여 문자열을 JsonElement로 변환
+        System.out.println(jsonElement);
 
         JsonObject jsonObj = new JsonObject(); // 마지막 return 할 jsonObject 객체 선언
         jsonObj.add("commentList", jsonElement); // 리스트 jsonElement 
-        
 
         String temp2 = mapper.writeValueAsString(pageDto.getPagination());  // Json 문자열로 변환
         JsonParser jsonParser2 = new JsonParser();
@@ -225,55 +277,19 @@ public class CommentController {
         JsonParser jsonParser3 = new JsonParser();
         jsonElement3 = jsonParser3.parse(temp3);   // JsonParser.parse를 이용하여 문자열을 JsonElement로 변환
 
-        jsonObj.add("pageAttr", jsonElement3); 
+        jsonObj.add("pageAttr", jsonElement3);
 
         return jsonObj; // return
-	}
+}
 
-    /*  
-    // Gson 라이브러리 사용 
-    // (1. HashMap<String,Object> JsonObject로 리턴하기 )
-	@GetMapping(value = "/comments/{boardIdx}")
-	public JsonObject getCommentList(@PathVariable("boardIdx") int boardIdx, @ModelAttribute("params") CommentDto params) throws JsonProcessingException, JSONException {
 
-		List<CommentDto> commentList = commentService.getCommentList(params);
 
-        ObjectMapper mapper = new ObjectMapper(); // writeValueAsString 함수 사용
-        List<CommentDto> list = new ArrayList<>(); 
 
-        int listSize = commentList.size();
 
-        HashMap<String,Object> contents = null;
-        JsonArray jsonArr = new JsonArray(); // JsonArray 선언 (for문 밖에서 return 해주기 위해서)
 
-        for (int i=0; i < listSize; i++) {
-            CommentDto noticeInfo = new CommentDto(); // for문 밖에 선언해도 상관없음
-            noticeInfo = commentList.get(i);
 
-            contents = new HashMap<>();
-            // 각 필드 map에 mapping
-            contents.put("idx", noticeInfo.getIdx());
-            contents.put("boardIdx", noticeInfo.getBoardIdx());
-            contents.put("content", noticeInfo.getContent());
-            contents.put("writer", noticeInfo.getWriter());
-            contents.put("deleteYn", noticeInfo.getDeleteYn());
-            contents.put("insertTime", noticeInfo.getInsertTime());
-              
-            String temp = mapper.writeValueAsString(contents);  // Json 문자열로 변환
-            JsonParser jsonParser = new JsonParser();
-            JsonElement jsonElement = jsonParser.parse(temp);   // JsonParser.parse를 이용하여 문자열을 JsonElement로 변환
-            jsonArr.add(jsonElement);   // jsonArr.add(JsonElement or JsonObject가 들어간다!!);
-            
-        }
 
-        JsonObject jsonObj = new JsonObject(); // 마지막 return 핧 jsonObject 객체 선언
-        jsonObj.add("commentList", jsonArr); // 객체에 jsonArr 넣기
 
-        return jsonObj; // return
-	}
-    */
-                         
-    
     // 등록 , 수정
     // @PostMapping(value = { "/comments", "/comments/{idx}" }) 이거도 가능 !!
 	@RequestMapping(value = { "/comments", "/comments/{idx}" }, method = { RequestMethod.POST, RequestMethod.PATCH })

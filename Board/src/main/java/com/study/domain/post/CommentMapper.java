@@ -16,8 +16,8 @@ public interface CommentMapper {
 
 	public int deleteComment(int idx);
 
-	public List<CommentDto> selectCommentList(CommentDto params);
+	public List<CommentDto> selectCommentList(CommentDto params);	// 댓글 리스트 출력
 
-	public int selectCommentTotalCount(CommentDto params);
+	public int selectCommentTotalCount(CommentDto params); // 댓글 리스트 갯수 출력
     
 }

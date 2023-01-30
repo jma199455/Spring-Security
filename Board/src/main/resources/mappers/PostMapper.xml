@@ -22,7 +22,7 @@
                 <!-- 전체 검색일 때 -->
                 <otherwise>
                         AND title LIKE CONCAT('%', #{keyword}, '%')
-                        AND writer LIKE CONCAT('%', #{keyword}, '%')
+                        <!-- OR writer LIKE CONCAT('%', #{keyword}, '%') -->
                 </otherwise>
             </choose>
         </if>

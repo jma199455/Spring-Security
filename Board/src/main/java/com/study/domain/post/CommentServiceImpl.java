@@ -1,12 +1,12 @@
 package com.study.domain.post;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.study.paging.Pagination;
 import com.study.paging.PaginationComment;
 
 @Service
@@ -51,22 +51,29 @@ public class CommentServiceImpl implements CommentService {
 		int commentTotalCount = commentMapper.selectCommentTotalCount(params);
 
 
-
 		/*  mapper.xml에 limitStart값 null 나오고 있어서 추가했음 (정상작동)*/
 		if (commentTotalCount < 1) {
 			params.setPagination(null);       
 		 }  
+		  
+		// selectCommentList에 필요한 파라미터 limitStart, recordSize 사용하기 위해서
 		PaginationComment pagination = new PaginationComment(commentTotalCount, params);
         params.setPagination(pagination);
-
-
-
-
-
 
 		if (commentTotalCount > 0) {
 			commentList = commentMapper.selectCommentList(params);
 		}
+
+		// ** getCommentList에서 pagination 넣어보기 , null 로 처리되고 있었음 **
+		/*    
+		CommentDto commentDto = commentList.get(0);
+		commentDto.setPagination(pagination); 
+		// for문 사용하면 각 list에 Pagination값이 들어감
+		//for (CommentDto commentDto : commentList) {
+			//commentDto.setPagination(pagination);
+		//}
+		System.out.println(commentList); // 데이터 확인
+		*/
 
 		return commentList;
 	}

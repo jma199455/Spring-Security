@@ -106,27 +106,43 @@
               ChkDeleteAjax(url, $.param(data,true), callback);
 
         });
+
     }
 
-        // 쿼리 스트링 파라미터 셋팅 (키워드, 검색 조건, 페이징 유지하기)
-        function setQueryStringParams() {
-
-            // ?~~~ 쿼리 스트링 없는 경우 메소드 종료
-            if ( !location.search ) {
-                return false;
-            }
-
-            const form = document.getElementById('searchForm');
-            // 쿼리스트링 값 해당 value에 넣기
-            var urlParams = new URLSearchParams(location.search);
-            urlParams.delete('id');
-
-            urlParams.forEach((value, key) => {
-                if (form[key]) {
-                    form[key].value = value;
-                }
-            })
+    $(document).ready(function(){
+      
+      
+      $('#searchForm input[type=text]').keydown(function(e) {
+        if (e.keyCode == 13) {
+          $('.bt_search').click();
         }
+      });
+
+
+
+    });
+
+
+
+    // 쿼리 스트링 파라미터 셋팅 (키워드, 검색 조건, 페이징 유지하기)
+    function setQueryStringParams() {
+
+        // ?~~~ 쿼리 스트링 없는 경우 메소드 종료
+        if ( !location.search ) {
+            return false;
+        }
+
+        const form = document.getElementById('searchForm');
+        // 쿼리스트링 값 해당 value에 넣기
+        var urlParams = new URLSearchParams(location.search);
+        urlParams.delete('id');
+
+        urlParams.forEach((value, key) => {
+            if (form[key]) {
+                form[key].value = value;
+            }
+        })
+    }
 
         
     // 게시글 상세 페이지로 이동
@@ -147,17 +163,18 @@
       if ( !list.length ) {
         document.getElementById('list').innerHTML = '<td colspan="6"><div className="no_data_msg">검색된 결과가 없습니다.</div></td>';
         drawPage();
+      } else {
+        const pagination = [[ ${response.pagination} ]];
+        const params = [[ ${params} ]];
+
+        let num = pagination.totalRecordCount - ((params.page - 1) * params.recordSize); // 번호 노출
+        //  num =  101 - 40 = 61                      5   - 1  = 4 * 10 40                                                    
+        //                    61 부터 num-- 로 나타내려고 사용
+
+        drawList(list, num);
+        drawPage(pagination, params);
+
       }
-
-      const pagination = [[ ${response.pagination} ]];
-      const params = [[ ${params} ]];
-
-      let num = pagination.totalRecordCount - ((params.page - 1) * params.recordSize); // 번호 노출
-      //  num =  101 - 40 = 61                      5   - 1  = 4 * 10 40                                                    
-      //                    61 부터 num-- 로 나타내려고 사용
-
-      drawList(list, num);
-      drawPage(pagination, params);
 
     }
 
@@ -192,50 +209,52 @@
 
       if ( !pagination || !params ) {
         document.querySelector('.paging').innerHTML = '';
-        throw new Error('Missing required parameters...');
-      }
-      
-      let html = '';
+        //throw new Error('Missing required parameters...');
+      } else {
 
-      // 첫 페이지, 이전 페이지
-      // console.log(pagination.existPrevPage);
-      // console.log(pagination.startPage);
-      if (pagination.existPrevPage) {
+        let html = '';
 
-        // pagination.startPage 가 1일경우 1page로 이동
-        if(pagination.startPage == 1) {
-          html += `
-            <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>
-            <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 1})" class="page_bt prev">이전 페이지</a>
-        `;
-        // 그 외의 경우 pagination.startPage - 10 으로 이동 ex) pagination.startPage가 21이면 21-10 = 11페이지로 이동
-        }else {
-          html += `
-            <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>
-            <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 10})" class="page_bt prev">이전 페이지</a>
-        `;
+        // 첫 페이지, 이전 페이지
+        // console.log(pagination.existPrevPage);
+        // console.log(pagination.startPage);
+        if (pagination.existPrevPage) {
+
+          // pagination.startPage 가 1일경우 1page로 이동
+          if(pagination.startPage == 1) {
+            html += `
+              <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>
+              <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 1})" class="page_bt prev">이전 페이지</a>
+          `;
+          // 그 외의 경우 pagination.startPage - 10 으로 이동 ex) pagination.startPage가 21이면 21-10 = 11페이지로 이동
+          }else {
+            html += `
+              <a href="javascript:void(0);" onclick="movePage(1)" class="page_bt first">첫 페이지</a>
+              <a href="javascript:void(0);" onclick="movePage(${pagination.startPage - 10})" class="page_bt prev">이전 페이지</a>
+          `;
+          }
+
         }
 
+        // 페이지 번호
+        html += '<p>';
+        for (let i = pagination.startPage; i <= pagination.endPage; i++) {
+
+          html += (i !== params.page)
+                  ? `<a href="javascript:void(0);" onclick="movePage(${i});">${i}</a>`
+                  : `<span class="on">${i}</span>`
+        }
+        html += '</p>';
+
+        // 다음 페이지, 마지막 페이지 (existNextPage는 page 10 이상)
+        if (pagination.existNextPage) {
+          html += `
+              <a href="javascript:void(0);" onclick="movePage(${pagination.endPage + 1});" class="page_bt next">다음 페이지</a>
+              <a href="javascript:void(0);" onclick="movePage(${pagination.totalPageCount});" class="page_bt last">마지막 페이지</a>
+          `;
+        }
+        document.querySelector('.paging').innerHTML = html;
       }
 
-      // 페이지 번호
-      html += '<p>';
-      for (let i = pagination.startPage; i <= pagination.endPage; i++) {
-
-        html += (i !== params.page)
-                ? `<a href="javascript:void(0);" onclick="movePage(${i});">${i}</a>`
-                : `<span class="on">${i}</span>`
-      }
-      html += '</p>';
-
-      // 다음 페이지, 마지막 페이지 (existNextPage는 page 10 이상)
-      if (pagination.existNextPage) {
-        html += `
-            <a href="javascript:void(0);" onclick="movePage(${pagination.endPage + 1});" class="page_bt next">다음 페이지</a>
-            <a href="javascript:void(0);" onclick="movePage(${pagination.totalPageCount});" class="page_bt last">마지막 페이지</a>
-        `;
-      }
-      document.querySelector('.paging').innerHTML = html;
     }
 
 
@@ -263,12 +282,15 @@
         searchType : form.searchType.value
       }
 
+      // 검색타입 미선택일 경우 alert 메시지 적용
+      /*  
       if(queryParams.searchType == "") {
         if(queryParams.keyword != "") {
             alert('검색타입을 선택해주세요.');
             return false;
         }
       }
+      */
 
       location.href = location.pathname + '?' + new URLSearchParams(queryParams).toString();
     }

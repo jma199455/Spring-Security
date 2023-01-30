@@ -9,14 +9,14 @@
                 <h1><a href="/chart/main.do">Admin</a></h1>
                 <div class="top_menu">
 
-
-
                     <!-- 컨트롤러에서 계속 session정보를 넘겨줄 수 없는거 같은데.. 당부에서는 sec:authentication="principal.name"> 이렇게 받아주고 있음 -->
                     <!-- 일단 차트 컨트롤러 /chart/main.do 에만 session 정보 userName 데이터 넘겨주고 있음 -->
                     <!-- <div class="login_user"><strong><i class="far fa-user-circle"></i>[[${userName}]]</strong>님 반갑습니다.</div> -->
 
                     <!-- 시큐리티 사용 -->
-                    Logged in user: <span sec:authentication="name"></span> | Roles: <span sec:authentication="principal.authorities"></span>
+                    Logged in user Id: <span sec:authentication="name"></span> | Roles: <span sec:authentication="principal.authorities"></span>
+                    <!-- 시큐리티 ROLE_MASTER 권한을 갖는다면 이글이 보힘 -->
+                    Check : <span sec:authorize="hasRole('MASTER')">마스터만 보임</span>
 
 
                     <!-- 커스텀 logout적용
@@ -26,8 +26,8 @@
 
                     <!-- // 시큐리티 기본 주소 /logout -->
                     <div class="logout"><button type="button" id="logoutBtn"><span class="skip_info">로그아웃</span><i
-                        class="fas fa-sign-out-alt"></i></button></div>        
-                        
+                        class="fas fa-sign-out-alt"></i></button>
+                    </div>        
                         
                 </div>
             </div>
