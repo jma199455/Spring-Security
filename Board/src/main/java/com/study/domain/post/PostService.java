@@ -77,7 +77,7 @@ public class PostService {
         postMapper.updateCnt(id);
 
         PostResponse result = postMapper.findById(id);
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-mm-dd HH:mm");
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         
         try {
             Date date = formater.parse(result.getCreatedDate());

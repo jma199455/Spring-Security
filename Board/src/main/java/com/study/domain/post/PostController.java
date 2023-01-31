@@ -114,18 +114,15 @@ public class PostController {
 
     // 게시글 상세 페이지
     @GetMapping("/post/view.do")
-    //public String openPostView(@ModelAttribute("params") CommentDto params, @RequestParam final int id, Model model) {
-    public String openPostView(@ModelAttribute("params") CommentDto params, @RequestParam(value = "id", required = false) String id, Model model) {
+    public String openPostView(@ModelAttribute("params") CommentDto params, @RequestParam final int id, Model model) {
+    //public String openPostView(@ModelAttribute("params") CommentDto params, @RequestParam(value = "id", required = false) String id, Model model) { // url파라미터 값 String으로 받아도 문제없음 findPostById(id) 넘기기전에 Integer.parse(id)만 적용해주면 됨
 
         System.out.println("view 파라미터 확인 ========> " + params); // Get -> queryString 파라미터 확인 
 
-        int idParam = Integer.parseInt(id); // 필요없으면 제거 
-
-
-        PostResponse post = postService.findPostById(idParam);
+        PostResponse post = postService.findPostById(id);
         model.addAttribute ("post", post); // 게시판 상세 내용
 
-        List<AttachDto> fileList = postService.getAttachFileList(idParam); // 파일 상세
+        List<AttachDto> fileList = postService.getAttachFileList(id); // 파일 상세
         model.addAttribute("fileList", fileList);
         
         return "post/view";

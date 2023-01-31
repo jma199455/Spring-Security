@@ -119,7 +119,7 @@
             <div class="clearfix">
                 <h4 class="box-title pull-left">Comment</h4>
             </div>
-            <form class="form-horizontal form-view">
+            <form class="form-horizontal form-view" onsubmit="return false;"> <!-- submit을 사용하지않고 ajax 사용하고 있기 때문에 (enter누르면 sumbit으러 넘어가고 있어서 ) -->
                 <div class="input-group margin-bottom-20">
                     <th:block th:fragment="view_modal"> <input type="text" id="content" class="form-control" />
                     <div class="input-group-btn">   
@@ -130,8 +130,7 @@
                 </div>
                 <ul class="notice-list"></ul>
 
-                <input type="text" style="display:none;"/>
-                <input type="hidden" id="hiddenId" name="id" value="">
+                <!-- <input type="text" style="display:none;"/> --> <!-- input type가 2개라 엔터를 submit 안되는 점을 이용 -->
             </form>
         </div>
         <!-- /.card-content -->
