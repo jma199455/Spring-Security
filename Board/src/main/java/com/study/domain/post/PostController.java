@@ -74,6 +74,7 @@ public class PostController {
     //public String savePost(final PostRequest params, Model model, @RequestParam("files") MultipartFile[] files) { 
     public String savePost(final PostRequest params, Model model, MultipartFile[] files) { // @RequestPart(value = "files", required = false) 사용안해도 이미지 등록이됨 이유 : 이름이 같으면 자동 매핑 처리
         System.out.println("filesfilesfilesfilesfilesfiles=========> " + files);
+        System.out.println("filesfilesfilesfilesfilesfiles=========> " + params);
 
         //System.out.println(file1);
         //System.out.println(file2);
@@ -113,21 +114,25 @@ public class PostController {
 
     // 게시글 상세 페이지
     @GetMapping("/post/view.do")
-    public String openPostView(@ModelAttribute("params") CommentDto params, @RequestParam final int id, Model model) {
+    //public String openPostView(@ModelAttribute("params") CommentDto params, @RequestParam final int id, Model model) {
+    public String openPostView(@ModelAttribute("params") CommentDto params, @RequestParam(value = "id", required = false) String id, Model model) {
 
-        //System.out.println("view 파라미터 확인 ========> " + params); // Get -> queryString 파라미터 확인 
+        System.out.println("view 파라미터 확인 ========> " + params); // Get -> queryString 파라미터 확인 
 
-        PostResponse post = postService.findPostById(id);
+        int idParam = Integer.parseInt(id); // 필요없으면 제거 
+
+
+        PostResponse post = postService.findPostById(idParam);
         model.addAttribute ("post", post); // 게시판 상세 내용
 
-        List<AttachDto> fileList = postService.getAttachFileList(id); // 파일 상세
+        List<AttachDto> fileList = postService.getAttachFileList(idParam); // 파일 상세
         model.addAttribute("fileList", fileList);
         
         return "post/view";
     } 
 
     /*  
-    // 기존 게시글 수정 from action으로 처리했을 때 사용 컨트롤러
+    // 기존 게시글 수정 from action으로 처리했을 때 사용 컨트롤러 (file 업로드 하기 전)
     @PostMapping("/post/update.do")
     public String updatePost(final PostRequest params, Model model) {
         postService.updatePost(params);

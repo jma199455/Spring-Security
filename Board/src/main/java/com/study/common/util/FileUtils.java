@@ -70,7 +70,7 @@ public class FileUtils {
 				/* 파일 확장자 */
 				String temp = file.getOriginalFilename().toString();
 				System.out.println(temp);
-				final String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+				final String extension = FilenameUtils.getExtension(file.getOriginalFilename()); // 확장자 가져오기
 				/* 서버에 저장할 파일명 (랜덤 문자열 + 확장자) */
 				final String saveName = getRandomString() + "." + extension;
 

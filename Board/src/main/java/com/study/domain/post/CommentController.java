@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 
-@RestController
+@RestController // @Controller와 @ResponseBody 을 합쳐놓음
 public class CommentController {
 
 	@Autowired
@@ -284,17 +284,12 @@ public class CommentController {
 
 
 
-
-
-
-
-
-
     // 등록 , 수정
     // @PostMapping(value = { "/comments", "/comments/{idx}" }) 이거도 가능 !!
-	@RequestMapping(value = { "/comments", "/comments/{idx}" }, method = { RequestMethod.POST, RequestMethod.PATCH })
-	public JsonObject registerComment(@PathVariable(value = "idx", required = false) Integer idx, @RequestBody final CommentDto params) {
-
+	@RequestMapping(value = { "/comments", "/comments/{idx}" }, method = { RequestMethod.POST, RequestMethod.PATCH }) // RequestMethod.PATCH --> POST 랑 같다고 생각
+	public JsonObject registerComment(@PathVariable(value = "idx", required = false) Integer idx, @RequestBody final CommentDto params) {   // 한 메소드에서 url을 2개 받고 있기 때문에 (/comments", "/comments/{idx})
+                                                                                                                                            // 수정 url이 아닌 등록 url일 경우 idx값아 null값이 되기 때문에 파라미터를 Integer로 받아줘야 에러가 나지 않는다!!!!!!!!!!!!!!!!!!!
+                                                                                                                                            // 그냥 단독으로 /comments/{idx} url 사용할 경우 int로 받아도 문제없다!!!!!!!!
 		JsonObject jsonObj = new JsonObject();
 
 		try {

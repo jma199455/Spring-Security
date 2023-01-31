@@ -32,8 +32,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation group: 'commons-io', name: 'commons-io', version: '2.6' /* Apache Commons IO  Commons  ==> CollectionUtils 사용*/
-	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.3' /* Apache Commons File Upload */ 
+	implementation group: 'commons-io', name: 'commons-io', version: '2.6' 					 /* Apache Commons IO  Commons  ==> CollectionUtils 사용 , 파일 업로드 구현*/ 
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.3' /* Apache Commons File Upload (파일 업로드 구현) */ 
 	
 	/* implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0' 함수 적용 안됨 이유 찾아보기*/
 	implementation 'org.apache.commons:commons-lang3:3.12.0'

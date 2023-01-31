@@ -123,12 +123,15 @@
                 <div class="input-group margin-bottom-20">
                     <th:block th:fragment="view_modal"> <input type="text" id="content" class="form-control" />
                     <div class="input-group-btn">   
-                        <button type="button" class="btn waves-effect waves-light" th:parameterName="${post.id}" th:onclick="insertComment(this.getAttribute('parameterName'))">
+                        <button type="button" class="btn waves-effect waves-light asd" th:parameterName="${post.id}" th:onclick="insertComment(this.getAttribute('parameterName'))">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
                 <ul class="notice-list"></ul>
+
+                <input type="text" style="display:none;"/>
+                <input type="hidden" id="hiddenId" name="id" value="">
             </form>
         </div>
         <!-- /.card-content -->
@@ -152,8 +155,22 @@
 
 
     $(function() {
+
+        // 댓글 리스트 출력
         printCommentList();
 
+        // 댓글 등록
+        $('.form-view input[type=text]').keydown(function(e) {
+            if(e.keyCode == 13) {
+                $('.asd').click();
+            }
+        });
+        
+        const id = [[${post.id}]];
+        var temp = $('#hiddenId').val(id);
+        //console.log(temp);
+
+        
 	});
 
     
@@ -255,6 +272,9 @@
             content.focus();
             return false;
         }
+
+        var urlParams = new URLSearchParams(location.search);
+        console.log(urlParams);
 
         // var uri = /*[[ @{/comments} ]]*/;
         var uri = "/comments";

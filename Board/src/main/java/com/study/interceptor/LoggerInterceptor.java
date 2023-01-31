@@ -39,7 +39,7 @@ public class LoggerInterceptor implements HandlerInterceptor{
         // return HandlerInterceptor.super.preHandle(request, response, handler);
     }
     
-    // 컨트롤러가 수행되고 화면이 보여지기 직전에 수행되는 메서드
+    // 컨트롤러가 수행되고 화면이 보여지기 직전에 수행되는 메서드 , 즉 화면(View)으로 결과를 전달하기 전에 실행되는 메서드입니다.
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         log.debug("==================== Interceptor END ======================");

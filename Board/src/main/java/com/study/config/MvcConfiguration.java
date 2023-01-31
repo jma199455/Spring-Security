@@ -39,11 +39,10 @@ public class MvcConfiguration implements WebMvcConfigurer { // 해당 인터페�
 			"/loginCheck",
 			"/logout",
 			"/signupForm",
-			"/signup",	// 여기까지 인터셉터로 로그인 처리하기 위해서 제외 url 설정한 부분
+			"/signup",	// 여기까지 인터셉터로 로그인 처리하기 위해서 제외 url 설정한 부분  (/loginCheck 사용해서 로그인 처리 했을 때)
 
-
-			"/**"    // 시큐리티 사용해보려고 인터셉터 적용 하지 않을려고 작성
-			//"/login2" // 지우고 확인해보기
+			// 시큐리티 사용해보려고 인터셉터 적용 하지 않을려고 작성
+			"/**"    
 			
 		};
 
@@ -68,8 +67,8 @@ public class MvcConfiguration implements WebMvcConfigurer { // 해당 인터페�
 	public FilterRegistrationBean getFilterRegistrationBean() {
 		FilterRegistrationBean registrationBean = new FilterRegistrationBean(new TestFilter());
 		registrationBean.setOrder(Integer.MIN_VALUE); // 여러 개의 필터가 있을 때, 필터의 동작 순서를 결정
-		//registrationBean.addUrlPatterns("/post/*"); // string 여러개를 가변인자로 받는 메소드 , setUrlPatterns과 같다
-		registrationBean.setUrlPatterns(Arrays.asList("/post/*")); // addUrlPatterns("/*"); 과 같다  , list로도 받을 수 있음 .setUrlPatterns(Collections.singletonList("/post/*"));
+		//registrationBean.addUrlPatterns("/post/*","/chart/*"); // string 여러개를 가변인자로 받는 메소드 , setUrlPatterns과 같다
+		registrationBean.setUrlPatterns(Arrays.asList("/post/*","/chart/*")); // addUrlPatterns("/*"); 과 같다  , list로도 받을 수 있음 .setUrlPatterns(Collections.singletonList("/post/*"));
 		return registrationBean;
 	}
 

@@ -43,11 +43,7 @@ public class TestFilter implements Filter{
                 chain.doFilter(req, res);   // Request, Response가 필터를 거칠 때 수행되는 메소드
                 log.debug("==========First 필터 종료!==========");
                 log.debug("Response Status Code is : " + response.getStatus());
-
-
-
-
-
+                
     }
 
     @Override

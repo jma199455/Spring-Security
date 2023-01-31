@@ -57,7 +57,7 @@ public class PostService {
 		List<AttachDto> fileList = fileUtils.uploadFiles(files, params.getId());
 
 		if (CollectionUtils.isEmpty(fileList) == false) {
-			queryResult = attachMapper.insertAttach(fileList);
+			queryResult = attachMapper.insertAttach(fileList); // 이미지 테이블에 해당 이미지 갯수만큼 insert
 			if (queryResult < 1) {
 				queryResult = 0;
 			}

@@ -40,7 +40,7 @@ public class UsersService {
     }
 
 
-    /*  시큐리티 사용안하고 그냥 /loginCheck 사용할 때
+    /*  시큐리티 사용안하고 그냥 /loginCheck 사용할 때 주석제거
     public int insert(UsersDto usersDto) throws Exception{
 
         return usersMapper.insert(usersDto);
