@@ -40,8 +40,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) { // (정적?)자원에 대한 접근을 품  , 시큐리티 적용 설정 부분
     web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/errorAction", "/signup", "/scripts/**", "/idCheck");
     //web.ignoring().antMatchers("/**");
+
+
+		// swagger
+    /*  
+    web.ignoring().antMatchers(
+		    		 "/v2/api-docs",  "/configuration/ui",
+             "/swagger-resources", "/configuration/security",
+             "/swagger-ui.html", "/webjars/**","/swagger/**");
+    */
   }
-  
+    
 
   
   // CSRF get, post 확인용으로 설정해본 부분
@@ -76,6 +85,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 권한 페이지 설정 부분 
         .antMatchers("/adminOnly").hasAuthority("ROLE_ADMIN") // 페이지 권한 설정(권한) , adminOnly 예제임 
         .antMatchers("/login2", "/signupForm").permitAll()  // .permitAll() 모든 사용자에 대해 접근(권한)을 허용 설정
+
+
+        //.antMatchers("/swagger-resources/**").permitAll()  // spring boot security와 함께 swagger를 사용 중이라면 security 때문에 접근이 안되고있기 때문에 설정???
 
         // 권한 페이지 설정 부분 (ADMIN, MASTER)
         .antMatchers("/member/list.do").hasAnyRole("ADMIN","MASTER") // "/member/list.do" 요청은 ADMIN or MASTER 권한을 가지고 있어야 허용한다 , 시스템상에서 특정 권한을 가진 사람만이 접근할 수 있음

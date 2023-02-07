@@ -27,6 +27,7 @@ public class PostRequest {
 	/** 파일 인덱스 리스트 */
 	private List<Integer> fileIdxs;
 	
+	//private List<String> files;
 	//private int[] fileIdxs; 파일 인덱스 리스트 배열로 받아볼 때 사용
 
 

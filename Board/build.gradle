@@ -42,6 +42,7 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-test' 		/* security적용 */
 	implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE' 	/* security적용 */
 
+	//implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0' /* swagger 사용 스프링버전이랑 오류가 있어서 되고있지 않음 */
 
 }
 

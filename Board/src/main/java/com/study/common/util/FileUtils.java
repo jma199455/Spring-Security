@@ -23,7 +23,7 @@ public class FileUtils {
 	private final String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
 
 	/** 업로드 경로 */
-	private final String uploadPath = Paths.get("C:", "dev_workspace", "upload", today).toString();
+	private final String uploadPath = Paths.get("C:", "dev_security", "upload", today).toString();
 
 	/**
 	 * 서버에 생성할 파일명을 처리할 랜덤 문자열 반환
@@ -76,12 +76,12 @@ public class FileUtils {
 
 				/* 업로드 경로에 saveName과 동일한 이름을 가진 파일 생성 */
 				File target = new File(uploadPath, saveName);
- 				file.transferTo(target); // MultipartFile 객체의 실제 업로드
+ 				file.transferTo(target); // MultipartFile 객체의 실제 업로드 (파일을 복사해서 전송)
 
 				/* 파일 정보 저장 */
 				AttachDto attach = new AttachDto();
 				attach.setBoardIdx(boardIdx);
-				attach.setOriginalName(file.getOriginalFilename());
+				attach.setOriginalName(file.getOriginalFilename());	// multipartFile 파일 이름 일겅오기
 				attach.setSaveName(saveName);
 				attach.setSize(file.getSize());
 

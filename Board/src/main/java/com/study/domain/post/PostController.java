@@ -160,7 +160,6 @@ public class PostController {
         System.out.println("params =================================================================> " + params); // write.html 에서 hidden 값으로 넘어온 것들, form태그들 확인하기!!
         //System.out.println("params =================================================================> " + files);   
         System.out.println("MultipartFile[] =================================================================> " + file);   
-
         //int result = 0;
         boolean result = postService.updatePost(params, file);
         return result;

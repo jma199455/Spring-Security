@@ -17,6 +17,9 @@ function hasCoda(value) {
  * @returns 필드 입력(선택) 여부
  */
 function isValid(target, fieldName, focusTarget) {
+
+    console.log(target);
+
     if (target.value.trim()) {
         return true;
     }

@@ -55,7 +55,7 @@ public class PostService {
         queryResult = postMapper.save(params); // 마이바티스의 useGeneratedKeys="true" keyProperty="id" 속성을 추가해 INSERT 쿼리의 실행과 동시에 생성된 PK가 파라미터로 전달된 객체 즉  PostRequest 클래의 객체에 담기게 된다.
         
 		List<AttachDto> fileList = fileUtils.uploadFiles(files, params.getId());
-
+        
 		if (CollectionUtils.isEmpty(fileList) == false) {
 			queryResult = attachMapper.insertAttach(fileList); // 이미지 테이블에 해당 이미지 갯수만큼 insert
 			if (queryResult < 1) {
