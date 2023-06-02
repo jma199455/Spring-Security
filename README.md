@@ -1,2 +1,2 @@
-# Spring-Security
+자바+스프링부트+JPA 와 관련 기술들을 공부.
 
